@@ -27,6 +27,16 @@ Every YAML key has an uppercase `SMFA_` environment equivalent, such as `SMFA_VA
 
 Optional OpenAI-compatible enrichment reads `OPENAI_API_KEY`, `OPENAI_BASE_URL`, and `OPENAI_MODEL` only when enrichment runs. These variables are not persisted in application settings, and `smfa doctor` reports only whether each one is present. Local collection, ASR, OCR, and Markdown output continue to work when enrichment is disabled or those variables are absent.
 
+`OPENAI_API_KEY` and `OPENAI_MODEL` are required only when enrichment is enabled. `OPENAI_BASE_URL` is optional and defaults to the OpenAI API root; when configured, it must be an HTTP(S) API root without embedded credentials, query parameters, or fragments. The client tries the Responses API first and falls back to Chat Completions only when the provider reports that the Responses endpoint is unsupported.
+
+The request contains only an allowlist of redacted text fields: title, author, platform, original text, transcript, and OCR text. It never contains source/media URLs, local paths, assets, browser state, cookies, headers, or raw platform responses. The result follows the strict `summary`, `key_points`, `topics`, `tags`, `language`, and `safety_notes` schema described by [OpenAI Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs). Invalid output and transient provider errors retain the complete local source text and return a retryable state; disabled, missing-configuration, and permanent-error paths do not block the base archive.
+
+Successful records persist only provider/model/prompt-version provenance, the text-input hash, the validated structured result, latency, character count, and token counts when supplied. They never persist the key, authorization metadata, endpoint URL, request body, or raw response.
+
+## OpenAI-compatible smoke evidence
+
+On 2026-08-08, one opt-in real call used only synthetic text and the already configured local environment. The strict structured result passed validation in 16,049 ms; the provider reported 4,641 input tokens, 112 output tokens, and 4,753 total tokens. The model value was intentionally not recorded because the environment-provided identifier may be private. No input/output text, endpoint, credential, or authorization metadata was logged or committed.
+
 ## Local OCR compatibility evidence
 
 The macOS default is RapidOCR backed by ONNX Runtime. PaddleOCR is intentionally not a required 1.0 dependency. Install the local backend with `uv sync --extra ocr`, then verify it without exposing content or credentials:

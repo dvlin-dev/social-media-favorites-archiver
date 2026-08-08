@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import sqlite3
 from collections.abc import Iterator
 from contextlib import contextmanager
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from social_media_favorites_archiver.models import (
     Asset,
@@ -19,6 +21,9 @@ from social_media_favorites_archiver.storage.migrations import (
     CURRENT_SCHEMA_VERSION,
     MIGRATIONS,
 )
+
+if TYPE_CHECKING:
+    from social_media_favorites_archiver.processors.enrichment import EnrichmentOutcome
 
 
 def _utc_now() -> datetime:
@@ -248,6 +253,67 @@ class Database:
             msg = "asset upsert did not return an identity"
             raise RuntimeError(msg)
         return int(row[0])
+
+    def upsert_enrichment(
+        self,
+        item_id: int,
+        outcome: EnrichmentOutcome,
+        *,
+        created_at: datetime | None = None,
+    ) -> str:
+        """Persist a successful structured enrichment without provider credentials."""
+        payload = outcome.persistence_payload()
+        provider = str(payload["provider"])
+        model = str(payload["model"])
+        prompt_version = str(payload["prompt_version"])
+        input_hash = str(payload["input_hash"])
+        identity = json.dumps(
+            {
+                "item_id": item_id,
+                "model": model,
+                "prompt_version": prompt_version,
+                "input_hash": input_hash,
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        enrichment_id = f"enrichment:{hashlib.sha256(identity.encode()).hexdigest()}"
+        result_json = _json(
+            {"result": payload["result"], "metrics": payload["metrics"]}
+        )
+        with self.connect() as connection:
+            connection.execute(
+                """
+                INSERT INTO enrichments (
+                    id, item_id, provider, model, prompt_version,
+                    input_hash, result_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(item_id, model, prompt_version, input_hash) DO UPDATE SET
+                    provider = excluded.provider,
+                    result_json = excluded.result_json,
+                    created_at = excluded.created_at
+                """,
+                (
+                    enrichment_id,
+                    item_id,
+                    provider,
+                    model,
+                    prompt_version,
+                    input_hash,
+                    result_json,
+                    _timestamp(created_at),
+                ),
+            )
+            row = connection.execute(
+                """
+                SELECT id FROM enrichments
+                WHERE item_id = ? AND model = ? AND prompt_version = ? AND input_hash = ?
+                """,
+                (item_id, model, prompt_version, input_hash),
+            ).fetchone()
+        if row is None:
+            raise RuntimeError("enrichment upsert did not return an identity")
+        return str(row[0])
 
     def set_membership(
         self,

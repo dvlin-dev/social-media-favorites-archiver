@@ -47,7 +47,7 @@ Update the `Status` cell as work progresses. Exactly one task may be `in_progres
 | 12 | Two-stage sync, early-stop, and reconciliation | completed |
 | 13 | Xiaohongshu adapter | completed |
 | 14 | Douyin adapter | completed |
-| 15 | Optional OpenAI-compatible enrichment | pending |
+| 15 | Optional OpenAI-compatible enrichment | completed |
 | 16 | CLI, scheduling, and run reports | pending |
 | 17 | Automated hardening and sanitized fixtures | pending |
 | 18 | Three-platform live end-to-end validation | pending |
@@ -423,15 +423,15 @@ social-media-favorites-archiver/
 - Create: `tests/integration/test_openai_compatible.py`
 - Modify: `skill/social-media-favorites-archiver/references/configuration.md`
 
-- [ ] Write tests for disabled mode, missing variables, configured custom base URL/model, structured-output validation, retryable errors, permanent errors, and local fallback.
-- [ ] Read `OPENAI_API_KEY`, `OPENAI_BASE_URL`, and `OPENAI_MODEL` at call time without logging values or persisting the key.
-- [ ] Send only extracted text plus minimal non-sensitive context. Never upload audio, video, images, cookies, browser state, signed asset URLs, or full raw platform responses.
-- [ ] Generate a concise summary, normalized tags, and optional topic/MOC suggestions under a strict schema; preserve source text separately.
-- [ ] Store provider/model/prompt-version provenance and sanitized request metrics, not secrets or raw authorization metadata.
-- [ ] Use mocked HTTP for CI. On this machine, run one opt-in real text-only smoke test using the existing environment and record only pass/fail, latency, model identifier if already non-secret, and token counts if provided.
-- [ ] Confirm the full archive/sync path works with enrichment disabled.
-- [ ] Commit with `feat: add optional text-only enrichment`.
-- [ ] Update the tracker and report results before continuing to Task 16.
+- [x] Write tests for disabled mode, missing variables, configured custom base URL/model, structured-output validation, retryable errors, permanent errors, and local fallback.
+- [x] Read `OPENAI_API_KEY`, `OPENAI_BASE_URL`, and `OPENAI_MODEL` at call time without logging values or persisting the key.
+- [x] Send only extracted text plus minimal non-sensitive context. Never upload audio, video, images, cookies, browser state, signed asset URLs, or full raw platform responses.
+- [x] Generate a concise summary, normalized tags, and optional topic/MOC suggestions under a strict schema; preserve source text separately.
+- [x] Store provider/model/prompt-version provenance and sanitized request metrics, not secrets or raw authorization metadata.
+- [x] Use mocked HTTP for CI. On this machine, run one opt-in real text-only smoke test using the existing environment and record only pass/fail, latency, model identifier if already non-secret, and token counts if provided.
+- [x] Confirm the full archive/sync path works with enrichment disabled.
+- [x] Commit with `feat: add optional text-only enrichment`.
+- [x] Update the tracker and report results before continuing to Task 16.
 
 ## Task 16: CLI, scheduling, and run reports
 
