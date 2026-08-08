@@ -33,7 +33,7 @@ Update the `Status` cell as work progresses. Exactly one task may be `in_progres
 | Task | Deliverable | Status |
 |---:|---|---|
 | 0 | Preflight and execution baseline | completed |
-| 1 | Python project scaffold and CI | pending |
+| 1 | Python project scaffold and CI | completed |
 | 2 | Configuration and doctor command | pending |
 | 3 | Domain model and SQLite schema | pending |
 | 4 | Durable queue, leases, and state machine | pending |
@@ -135,16 +135,16 @@ social-media-favorites-archiver/
 - Create: `.gitignore`
 - Create: `LICENSE`
 
-- [ ] Add a failing CLI test asserting `smfa --help` exits successfully and exposes `doctor`, `login`, `sync`, `status`, `retry`, and `cleanup`.
-- [ ] Configure Python `>=3.11`, the `src` package layout, `smfa = social_media_favorites_archiver.cli:app`, Ruff, mypy, pytest, and coverage in `pyproject.toml`.
-- [ ] Use a lean base dependency set: Typer, Pydantic, pydantic-settings, PyYAML, Playwright, `yt-dlp`, `httpx`, `filelock`, Pillow, ImageHash, and RapidFuzz. Put platform/model-heavy packages in named optional dependency groups.
-- [ ] Implement the minimal Typer application required to make the CLI test pass without pretending any sync behavior exists.
-- [ ] Ignore `.env`, browser profiles, cookies, SQLite files, caches, generated vaults, model files, coverage output, and `work/`.
-- [ ] Add the root MIT license for application source code.
-- [ ] Add a GitHub Actions matrix for `ubuntu-latest` and `macos-14` with Python 3.11 and 3.12; CI must run `ruff check .`, `mypy src`, and `pytest`, and must not require live logins or model downloads.
-- [ ] Run `uv sync --group dev`, then `uv run ruff check .`, `uv run mypy src`, and `uv run pytest tests/unit/test_cli.py -q`.
-- [ ] Commit with `build: scaffold Python CLI and CI`.
-- [ ] Update the tracker and report results before continuing to Task 2.
+- [x] Add a failing CLI test asserting `smfa --help` exits successfully and exposes `doctor`, `login`, `sync`, `status`, `retry`, and `cleanup`.
+- [x] Configure Python `>=3.11`, the `src` package layout, `smfa = social_media_favorites_archiver.cli:app`, Ruff, mypy, pytest, and coverage in `pyproject.toml`.
+- [x] Use a lean base dependency set: Typer, Pydantic, pydantic-settings, PyYAML, Playwright, `yt-dlp`, `httpx`, `filelock`, Pillow, ImageHash, and RapidFuzz. Put platform/model-heavy packages in named optional dependency groups.
+- [x] Implement the minimal Typer application required to make the CLI test pass without pretending any sync behavior exists.
+- [x] Ignore `.env`, browser profiles, cookies, SQLite files, caches, generated vaults, model files, coverage output, and `work/`.
+- [x] Add the root MIT license for application source code.
+- [x] Add a GitHub Actions matrix for `ubuntu-latest` and `macos-14` with Python 3.11 and 3.12; CI must run `ruff check .`, `mypy src`, and `pytest`, and must not require live logins or model downloads.
+- [x] Run `uv sync --group dev`, then `uv run ruff check .`, `uv run mypy src`, and `uv run pytest tests/unit/test_cli.py -q`.
+- [x] Commit with `build: scaffold Python CLI and CI`.
+- [x] Update the tracker and report results before continuing to Task 2.
 
 ## Task 2: Configuration and doctor command
 

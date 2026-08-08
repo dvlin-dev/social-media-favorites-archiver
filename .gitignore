@@ -1,0 +1,51 @@
+# Local secrets and environment files
+.env
+.env.*
+!.env.example
+
+# Python and test tooling
+__pycache__/
+*.py[cod]
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+.venv/
+dist/
+build/
+*.egg-info/
+
+# Private browser and platform state
+browser-profile/
+browser-profiles/
+cookies*.txt
+playwright/.auth/
+
+# Local databases, caches, models, and generated vaults
+*.db
+*.db-shm
+*.db-wal
+cache/
+caches/
+models/
+vault/
+vaults/
+work/
+
+# Partial and downloaded media
+*.partial
+*.part
+*.mp4
+*.mkv
+*.webm
+*.m4a
+*.mp3
+*.wav
+
+# Editors and operating systems
+.DS_Store
+.idea/
+.vscode/
+
