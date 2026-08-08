@@ -1,0 +1,103 @@
+{
+  "evidence": {
+    "authorized_session_observed": true,
+    "captured_at": "2026-08-08",
+    "values": "synthetic-placeholders-only",
+    "observed_shapes": {
+      "session": ["isLogin", "favoritePermission", "userCollectCount"],
+      "favorite_page": ["aweme_list", "has_more", "max_cursor"],
+      "subtitle_candidates": ["auto_captions", "caption_infos", "subtitleInfos"],
+      "content_variants": ["video", "images"]
+    }
+  },
+  "session": {"authenticated": true},
+  "collection_pages": {
+    "root": {
+      "items": [{"id": "favorites", "name": "Favorites"}],
+      "next_cursor": "collections-2",
+      "complete": false,
+      "ordering_stable": true
+    },
+    "collections-2": {
+      "items": [{"id": "image-favorites", "name": "Image favorites"}],
+      "next_cursor": null,
+      "complete": true,
+      "ordering_stable": true
+    }
+  },
+  "favorite_pages": {
+    "root": {
+      "items": [
+        {"aweme_id": "fixture-track", "aweme_type": "video", "revision": "1"},
+        {"aweme_id": "fixture-caption", "aweme_type": "video", "revision": "2"}
+      ],
+      "next_cursor": "favorites-2",
+      "complete": false,
+      "ordering_stable": true,
+      "total_count": 4
+    },
+    "favorites-2": {
+      "items": [
+        {"aweme_id": "fixture-gallery", "aweme_type": "images", "revision": "3"},
+        {"aweme_id": "fixture-unavailable", "aweme_type": "video", "revision": "4"}
+      ],
+      "next_cursor": null,
+      "complete": true,
+      "ordering_stable": true,
+      "total_count": 4
+    }
+  },
+  "details": {
+    "fixture-track": {
+      "aweme_id": "fixture-track",
+      "aweme_type": "video",
+      "desc": "Synthetic video with text track.",
+      "author": {"nickname": "Fixture author"},
+      "video": {
+        "play_addr": {"url_list": ["https://example.invalid/track-video.mp4"]}
+      },
+      "text_track": [
+        {"start": 0.0, "end": 1.0, "text": "Synthetic subtitle."}
+      ]
+    },
+    "fixture-caption": {
+      "aweme_id": "fixture-caption",
+      "aweme_type": "video",
+      "desc": "Synthetic burned-caption video.",
+      "author": {"nickname": "Fixture author"},
+      "video": {
+        "play_addr": {"url_list": ["https://example.invalid/caption-video.mp4"]},
+        "cla_info": {
+          "caption_infos": [{"language_code": "zh", "Url": "https://example.invalid/candidate.vtt"}]
+        }
+      }
+    },
+    "fixture-gallery": {
+      "aweme_id": "fixture-gallery",
+      "aweme_type": "images",
+      "desc": "Synthetic gallery.",
+      "author": {"nickname": "Fixture author"},
+      "images": [
+        {
+          "width": 4,
+          "height": 3,
+          "display_image": {"url_list": ["https://example.invalid/gallery-high-1.png"]},
+          "url_list": ["https://example.invalid/gallery-fallback-1.png"]
+        },
+        {
+          "width": 2,
+          "height": 2,
+          "url_list": ["https://example.invalid/gallery-fallback-2.png"]
+        }
+      ]
+    },
+    "fixture-unavailable": {
+      "aweme_id": "fixture-unavailable",
+      "aweme_type": "video",
+      "availability": "unavailable",
+      "desc": "",
+      "author": {"nickname": "Unknown author"},
+      "video": {"play_addr": {"url_list": ["https://example.invalid/unavailable.mp4"]}}
+    }
+  }
+}

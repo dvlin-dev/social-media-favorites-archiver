@@ -46,7 +46,7 @@ Update the `Status` cell as work progresses. Exactly one task may be `in_progres
 | 11 | ASR × OCR timeline fusion | completed |
 | 12 | Two-stage sync, early-stop, and reconciliation | completed |
 | 13 | Xiaohongshu adapter | completed |
-| 14 | Douyin adapter | pending |
+| 14 | Douyin adapter | completed |
 | 15 | Optional OpenAI-compatible enrichment | pending |
 | 16 | CLI, scheduling, and run reports | pending |
 | 17 | Automated hardening and sanitized fixtures | pending |
@@ -403,16 +403,16 @@ social-media-favorites-archiver/
 - Create: `tests/integration/test_douyin_fixture.py`
 - Create: `skill/social-media-favorites-archiver/references/platform-douyin.md`
 
-- [ ] Capture only sanitized structural fixtures under the same privacy rules as Task 13.
-- [ ] Write contract tests for favorite collections, video, image/gallery, subtitle-probe outcomes, unavailable items, auth expiry, and complete/partial enumeration.
-- [ ] Implement authenticated page navigation and XHR/page-context extraction. Do not calculate `a_bogus` in Python.
-- [ ] Probe for a usable text/subtitle track, but size and schedule the default video pipeline for local ASR plus adaptive frame OCR.
-- [ ] Feed the two extraction streams through timeline fusion so spoken burned captions are not duplicated and visual-only information remains.
-- [ ] Process image/gallery posts as ordered images with inline OCR rather than forcing them through a video path.
-- [ ] Detect layout/API drift and pause with a sanitized diagnostic rather than silently dropping items.
-- [ ] Pass the generic adapter suite and Douyin sanitized fixture tests.
-- [ ] Commit with `feat: add Douyin favorites adapter`.
-- [ ] Update the tracker and report results before continuing to Task 15.
+- [x] Capture only sanitized structural fixtures under the same privacy rules as Task 13.
+- [x] Write contract tests for favorite collections, video, image/gallery, subtitle-probe outcomes, unavailable items, auth expiry, and complete/partial enumeration.
+- [x] Implement authenticated page navigation and XHR/page-context extraction. Do not calculate `a_bogus` in Python.
+- [x] Probe for a usable text/subtitle track, but size and schedule the default video pipeline for local ASR plus adaptive frame OCR.
+- [x] Feed the two extraction streams through timeline fusion so spoken burned captions are not duplicated and visual-only information remains.
+- [x] Process image/gallery posts as ordered images with inline OCR rather than forcing them through a video path.
+- [x] Detect layout/API drift and pause with a sanitized diagnostic rather than silently dropping items.
+- [x] Pass the generic adapter suite and Douyin sanitized fixture tests.
+- [x] Commit with `feat: add Douyin favorites adapter`.
+- [x] Update the tracker and report results before continuing to Task 15.
 
 ## Task 15: Optional OpenAI-compatible enrichment
 
