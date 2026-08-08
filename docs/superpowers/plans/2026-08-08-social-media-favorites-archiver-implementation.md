@@ -39,7 +39,7 @@ Update the `Status` cell as work progresses. Exactly one task may be `in_progres
 | 4 | Durable queue, leases, and state machine | completed |
 | 5 | Markdown renderer, note protection, and indexes | completed |
 | 6 | Asset safety, redaction, and cleanup barrier | completed |
-| 7 | Browser session and adapter contract | pending |
+| 7 | Browser session and adapter contract | completed |
 | 8 | Bilibili adapter | pending |
 | 9 | Local ASR backends | pending |
 | 10 | OCR and adaptive keyframes | pending |
@@ -261,15 +261,15 @@ social-media-favorites-archiver/
 - Create: `tests/contract/test_adapter_contract.py`
 - Create: `tests/unit/test_browser_session.py`
 
-- [ ] Define the adapter contract: `check_session`, `begin_login`, `list_collections`, `list_favorites`, `fetch_item`, `download_assets`, and `diagnose`.
-- [ ] Create a reusable contract suite for cursor progression, stable IDs, ordered assets, session expiry, sanitized diagnostics, retries, and completeness signals.
-- [ ] Implement Playwright connection to an explicitly configured real Chrome CDP endpoint/profile; do not copy the user's default browser database or store passwords.
-- [ ] Support page-driven navigation, XHR/fetch response interception, and requests executed in the authenticated page context.
-- [ ] Explicitly forbid Python-side reimplementation of Xiaohongshu `x-s` or Douyin `a_bogus`; `httpx` may download only adapter-obtained static assets under safety controls.
-- [ ] On QR, captcha, or device confirmation, checkpoint state and return a user-action instruction without bypass attempts.
-- [ ] Test with a local mock page/server only; no live platform dependency in CI.
-- [ ] Commit with `feat: add authenticated browser and adapter contract`.
-- [ ] Update the tracker and report results before continuing to Task 8.
+- [x] Define the adapter contract: `check_session`, `begin_login`, `list_collections`, `list_favorites`, `fetch_item`, `download_assets`, and `diagnose`.
+- [x] Create a reusable contract suite for cursor progression, stable IDs, ordered assets, session expiry, sanitized diagnostics, retries, and completeness signals.
+- [x] Implement Playwright connection to an explicitly configured real Chrome CDP endpoint/profile; do not copy the user's default browser database or store passwords.
+- [x] Support page-driven navigation, XHR/fetch response interception, and requests executed in the authenticated page context.
+- [x] Explicitly forbid Python-side reimplementation of Xiaohongshu `x-s` or Douyin `a_bogus`; `httpx` may download only adapter-obtained static assets under safety controls.
+- [x] On QR, captcha, or device confirmation, checkpoint state and return a user-action instruction without bypass attempts.
+- [x] Test with a local mock page/server only; no live platform dependency in CI.
+- [x] Commit with `feat: add authenticated browser and adapter contract`.
+- [x] Update the tracker and report results before continuing to Task 8.
 
 ## Task 8: Bilibili adapter
 
