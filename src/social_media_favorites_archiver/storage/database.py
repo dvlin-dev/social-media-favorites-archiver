@@ -271,7 +271,10 @@ class Database:
                     state = excluded.state,
                     last_seen_at = excluded.last_seen_at,
                     removed_at = excluded.removed_at,
-                    last_complete_run_id = excluded.last_complete_run_id
+                    last_complete_run_id = COALESCE(
+                        excluded.last_complete_run_id,
+                        item_collections.last_complete_run_id
+                    )
                 """,
                 (
                     item_id,

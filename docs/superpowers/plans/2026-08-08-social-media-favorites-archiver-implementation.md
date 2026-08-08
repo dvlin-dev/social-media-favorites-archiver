@@ -44,7 +44,7 @@ Update the `Status` cell as work progresses. Exactly one task may be `in_progres
 | 9 | Local ASR backends | completed |
 | 10 | OCR and adaptive keyframes | completed |
 | 11 | ASR × OCR timeline fusion | completed |
-| 12 | Two-stage sync, early-stop, and reconciliation | pending |
+| 12 | Two-stage sync, early-stop, and reconciliation | completed |
 | 13 | Xiaohongshu adapter | pending |
 | 14 | Douyin adapter | pending |
 | 15 | Optional OpenAI-compatible enrichment | pending |
@@ -361,18 +361,18 @@ social-media-favorites-archiver/
 - Create: `tests/integration/test_incremental_sync.py`
 - Create: `tests/integration/test_reconciliation.py`
 
-- [ ] Write an integration test proving enumeration creates all metadata skeletons before any heavy media job completes.
-- [ ] Write a test proving heavy jobs update the same note in place and a restart resumes outstanding stages without duplicates.
-- [ ] Implement the two stages: lightweight collection/item enumeration and skeleton render, followed by persistent heavy processing jobs.
-- [ ] Implement incremental early-stop only after a configurable consecutive run of known unchanged canonical IDs, with adapter ordering/completeness evidence and a force-full-sync option.
-- [ ] Treat re-favorited old items as active/newly observed even when their canonical IDs were previously known.
-- [ ] Reconcile removals only for a collection whose current enumeration completed successfully. Never mark unseen items removed after auth expiry, rate limit, parse failure, cancellation, or partial pagination.
-- [ ] Update memberships per collection and derive item removal only after every active membership is gone.
-- [ ] Separate lightweight source fingerprints from asset hashes and extraction versions so changes to ASR/OCR code can reprocess derivations without redownloading unchanged assets when safe.
-- [ ] Add cleanup scheduling only after the full derivative barrier from Task 6 passes.
-- [ ] Run all orchestrator/reconciliation/idempotency tests.
-- [ ] Commit with `feat: orchestrate two-stage incremental sync`.
-- [ ] Update the tracker and report results before continuing to Task 13.
+- [x] Write an integration test proving enumeration creates all metadata skeletons before any heavy media job completes.
+- [x] Write a test proving heavy jobs update the same note in place and a restart resumes outstanding stages without duplicates.
+- [x] Implement the two stages: lightweight collection/item enumeration and skeleton render, followed by persistent heavy processing jobs.
+- [x] Implement incremental early-stop only after a configurable consecutive run of known unchanged canonical IDs, with adapter ordering/completeness evidence and a force-full-sync option.
+- [x] Treat re-favorited old items as active/newly observed even when their canonical IDs were previously known.
+- [x] Reconcile removals only for a collection whose current enumeration completed successfully. Never mark unseen items removed after auth expiry, rate limit, parse failure, cancellation, or partial pagination.
+- [x] Update memberships per collection and derive item removal only after every active membership is gone.
+- [x] Separate lightweight source fingerprints from asset hashes and extraction versions so changes to ASR/OCR code can reprocess derivations without redownloading unchanged assets when safe.
+- [x] Add cleanup scheduling only after the full derivative barrier from Task 6 passes.
+- [x] Run all orchestrator/reconciliation/idempotency tests.
+- [x] Commit with `feat: orchestrate two-stage incremental sync`.
+- [x] Update the tracker and report results before continuing to Task 13.
 
 ## Task 13: Xiaohongshu adapter
 
