@@ -45,7 +45,7 @@ Update the `Status` cell as work progresses. Exactly one task may be `in_progres
 | 10 | OCR and adaptive keyframes | completed |
 | 11 | ASR × OCR timeline fusion | completed |
 | 12 | Two-stage sync, early-stop, and reconciliation | completed |
-| 13 | Xiaohongshu adapter | pending |
+| 13 | Xiaohongshu adapter | completed |
 | 14 | Douyin adapter | pending |
 | 15 | Optional OpenAI-compatible enrichment | pending |
 | 16 | CLI, scheduling, and run reports | pending |
@@ -383,16 +383,16 @@ social-media-favorites-archiver/
 - Create: `tests/integration/test_xiaohongshu_fixture.py`
 - Create: `skill/social-media-favorites-archiver/references/platform-xiaohongshu.md`
 
-- [ ] Capture only sanitized structural fixtures from an authorized session; remove cookies, tokens, signatures, private URLs, user identifiers, captions, and media before commit.
-- [ ] Write contract tests for collection/favorite pagination, pure text, ordered multi-image, video, unavailable notes, session expiry, and complete/partial enumeration.
-- [ ] Implement authenticated page navigation and structured-response interception/page-context extraction. Do not calculate `x-s` in Python.
-- [ ] Prefer actual high-quality image URLs exposed by the page/response, including `imageList[].urlDefault` when present; verify dimensions, MIME, length, and hash; record a quality downgrade only when originals are unavailable.
-- [ ] Preserve source text and ordered image blocks; render OCR immediately below each image.
-- [ ] Treat local ASR plus adaptive frame OCR as the normal video path when no real machine-readable subtitle is exposed.
-- [ ] Map page/layout changes to a clear adapter diagnostic and pause safely rather than returning incomplete data as complete.
-- [ ] Pass the generic adapter suite and Xiaohongshu sanitized fixture tests.
-- [ ] Commit with `feat: add Xiaohongshu favorites adapter`.
-- [ ] Update the tracker and report results before continuing to Task 14.
+- [x] Capture only sanitized structural fixtures from an authorized session; remove cookies, tokens, signatures, private URLs, user identifiers, captions, and media before commit.
+- [x] Write contract tests for collection/favorite pagination, pure text, ordered multi-image, video, unavailable notes, session expiry, and complete/partial enumeration.
+- [x] Implement authenticated page navigation and structured-response interception/page-context extraction. Do not calculate `x-s` in Python.
+- [x] Prefer actual high-quality image URLs exposed by the page/response, including `imageList[].urlDefault` when present; verify dimensions, MIME, length, and hash; record a quality downgrade only when originals are unavailable.
+- [x] Preserve source text and ordered image blocks; render OCR immediately below each image.
+- [x] Treat local ASR plus adaptive frame OCR as the normal video path when no real machine-readable subtitle is exposed.
+- [x] Map page/layout changes to a clear adapter diagnostic and pause safely rather than returning incomplete data as complete.
+- [x] Pass the generic adapter suite and Xiaohongshu sanitized fixture tests.
+- [x] Commit with `feat: add Xiaohongshu favorites adapter`.
+- [x] Update the tracker and report results before continuing to Task 14.
 
 ## Task 14: Douyin adapter
 

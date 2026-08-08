@@ -1,0 +1,105 @@
+{
+  "evidence": {
+    "authorized_session_observed": true,
+    "captured_at": "2026-08-08",
+    "values": "synthetic-placeholders-only",
+    "observed_shapes": {
+      "favorite_query": ["cursor", "hasMore", "num", "page", "userId"],
+      "favorite_entry": ["id", "index", "noteCard", "xsecToken"],
+      "note_card": ["cover", "displayTitle", "interactInfo", "noteId", "type", "user"],
+      "image": ["fileId", "height", "infoList", "url", "urlDefault", "urlPre", "width"]
+    }
+  },
+  "session": {"authenticated": true},
+  "collection_pages": {
+    "root": {
+      "items": [{"id": "saved-notes", "name": "Saved notes"}],
+      "next_cursor": "collections-2",
+      "complete": false,
+      "ordering_stable": true
+    },
+    "collections-2": {
+      "items": [{"id": "saved-videos", "name": "Saved videos"}],
+      "next_cursor": null,
+      "complete": true,
+      "ordering_stable": true
+    }
+  },
+  "favorite_pages": {
+    "root": {
+      "items": [
+        {"id": "fixture-text", "type": "normal", "revision": "1"},
+        {"id": "fixture-gallery", "type": "normal", "revision": "2"}
+      ],
+      "next_cursor": "favorites-2",
+      "complete": false,
+      "ordering_stable": true,
+      "total_count": 4
+    },
+    "favorites-2": {
+      "items": [
+        {"id": "fixture-video", "type": "video", "revision": "3"},
+        {"id": "fixture-unavailable", "type": "normal", "revision": "4"}
+      ],
+      "next_cursor": null,
+      "complete": true,
+      "ordering_stable": true,
+      "total_count": 4
+    }
+  },
+  "details": {
+    "fixture-text": {
+      "noteId": "fixture-text",
+      "type": "normal",
+      "title": "Fixture text note",
+      "desc": "Synthetic fixture body.",
+      "user": {"nickname": "Fixture author"},
+      "imageList": []
+    },
+    "fixture-gallery": {
+      "noteId": "fixture-gallery",
+      "type": "normal",
+      "title": "Fixture gallery",
+      "desc": "Synthetic gallery body.",
+      "user": {"nickname": "Fixture author"},
+      "imageList": [
+        {
+          "width": 4,
+          "height": 3,
+          "urlDefault": "https://example.invalid/original-1.png",
+          "url": "https://example.invalid/fallback-1.png",
+          "infoList": [{"imageScene": "WB_DFT", "url": "https://example.invalid/info-1.png"}]
+        },
+        {
+          "width": 2,
+          "height": 2,
+          "url": "https://example.invalid/fallback-2.png",
+          "infoList": [{"imageScene": "WB_PRV", "url": "https://example.invalid/info-2.png"}]
+        }
+      ]
+    },
+    "fixture-video": {
+      "noteId": "fixture-video",
+      "type": "video",
+      "title": "Fixture video",
+      "desc": "Synthetic video body.",
+      "user": {"nickname": "Fixture author"},
+      "imageList": [],
+      "video": {
+        "media": {
+          "stream": {
+            "h264": [{"masterUrl": "https://example.invalid/video.mp4"}]
+          }
+        }
+      }
+    },
+    "fixture-unavailable": {
+      "noteId": "fixture-unavailable",
+      "type": "normal",
+      "availability": "unavailable",
+      "title": "Unavailable fixture",
+      "user": {"nickname": "Unknown author"},
+      "imageList": []
+    }
+  }
+}
