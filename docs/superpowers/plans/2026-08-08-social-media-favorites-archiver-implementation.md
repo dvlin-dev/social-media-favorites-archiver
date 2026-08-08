@@ -38,7 +38,7 @@ Update the `Status` cell as work progresses. Exactly one task may be `in_progres
 | 3 | Domain model and SQLite schema | completed |
 | 4 | Durable queue, leases, and state machine | completed |
 | 5 | Markdown renderer, note protection, and indexes | completed |
-| 6 | Asset safety, redaction, and cleanup barrier | pending |
+| 6 | Asset safety, redaction, and cleanup barrier | completed |
 | 7 | Browser session and adapter contract | pending |
 | 8 | Bilibili adapter | pending |
 | 9 | Local ASR backends | pending |
@@ -240,16 +240,16 @@ social-media-favorites-archiver/
 - Create: `tests/unit/test_redaction.py`
 - Create: `tests/integration/test_cleanup_barrier.py`
 
-- [ ] Write failing path tests for traversal, symlink escape, invalid filenames, collisions, excessive length, and cross-item asset ownership.
-- [ ] Implement canonical path containment, slug plus stable-ID filenames, atomic streaming downloads, allowed MIME checks, size limits, and SHA-256 verification.
-- [ ] Write redaction tests containing fake cookies, bearer tokens, query signatures, URLs, and OpenAI keys; assert logs and diagnostic bundles contain only redacted forms.
-- [ ] Implement structured logging that never serializes raw browser responses or environment values by default.
-- [ ] Write cleanup barrier tests proving the temporary video is retained until transcript/subtitles, required keyframes, OCR, fusion, Markdown render, assets, and file verification all succeed.
-- [ ] Make cleanup idempotent, auditable, path-contained, and limited to explicit item-owned temporary files. Never recursively delete a broad directory.
-- [ ] Add configurable cache quota and low-disk behavior that pauses heavy jobs safely.
-- [ ] Run all safety tests and inspect test logs for fake secret leakage.
-- [ ] Commit with `feat: secure assets logs and media cleanup`.
-- [ ] Update the tracker and report results before continuing to Task 7.
+- [x] Write failing path tests for traversal, symlink escape, invalid filenames, collisions, excessive length, and cross-item asset ownership.
+- [x] Implement canonical path containment, slug plus stable-ID filenames, atomic streaming downloads, allowed MIME checks, size limits, and SHA-256 verification.
+- [x] Write redaction tests containing fake cookies, bearer tokens, query signatures, URLs, and OpenAI keys; assert logs and diagnostic bundles contain only redacted forms.
+- [x] Implement structured logging that never serializes raw browser responses or environment values by default.
+- [x] Write cleanup barrier tests proving the temporary video is retained until transcript/subtitles, required keyframes, OCR, fusion, Markdown render, assets, and file verification all succeed.
+- [x] Make cleanup idempotent, auditable, path-contained, and limited to explicit item-owned temporary files. Never recursively delete a broad directory.
+- [x] Add configurable cache quota and low-disk behavior that pauses heavy jobs safely.
+- [x] Run all safety tests and inspect test logs for fake secret leakage.
+- [x] Commit with `feat: secure assets logs and media cleanup`.
+- [x] Update the tracker and report results before continuing to Task 7.
 
 ## Task 7: Browser session and adapter contract
 
