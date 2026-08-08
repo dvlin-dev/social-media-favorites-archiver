@@ -9,3 +9,16 @@ The adapter discovers collection IDs in the user's authenticated Bilibili page c
 - Multi-part videos remain one canonical note with ordered part chapters.
 - Private, deleted, or unavailable favorites retain safe metadata rather than disappearing silently.
 - Real favorite content and signed media URLs belong only in ignored live-work paths, never fixtures or Git.
+
+## Local ASR benchmark
+
+Development-machine smoke benchmark on 2026-08-08:
+
+- Backend/model: `mlx-whisper 0.4.3` / `mlx-community/whisper-tiny`
+- Architecture: Apple Silicon `arm64`
+- Input: 3.308-second synthetic Mandarin clip generated locally with the macOS Ting-Ting voice
+- Warm-cache elapsed time: 3.028 seconds; real-time factor 0.915
+- Result: speech outcome with one bounded timestamped segment
+- Model cache: 141.9 MiB; generated input/intermediate disk use: 0.2 MiB
+
+This is a compatibility smoke test, not a universal speed or accuracy claim. The tiny model and synthetic voice are less representative than real saved videos; Task 18 must validate the bounded live fallback path, and users may select a larger local model when accuracy matters.
