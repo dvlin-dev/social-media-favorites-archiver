@@ -1,0 +1,104 @@
+{
+  "collections": [
+    {
+      "id": "fav-001",
+      "title": "Fixture collection"
+    }
+  ],
+  "playlist": {
+    "id": "fav-001",
+    "title": "Fixture collection",
+    "entries": [
+      {
+        "id": "BV1fixture",
+        "url": "https://www.bilibili.com/video/BV1fixture",
+        "title": "Fixture video",
+        "timestamp": 1786180800
+      },
+      {
+        "id": "av123456",
+        "url": "https://www.bilibili.com/video/av123456",
+        "title": "Fixture legacy video",
+        "timestamp": 1786180700
+      },
+      {
+        "id": "BV1private",
+        "url": "https://www.bilibili.com/video/BV1private",
+        "title": "Unavailable fixture",
+        "availability": "private"
+      }
+    ]
+  },
+  "items": {
+    "BV1fixture": {
+      "id": "BV1fixture",
+      "title": "Fixture video",
+      "uploader": "Fixture author",
+      "timestamp": 1786180800,
+      "description": "Fixture description.",
+      "thumbnail": "https://i0.hdslb.com/fixture-cover.jpg",
+      "subtitles": {
+        "zh-CN": [
+          {
+            "ext": "srt",
+            "name": "人工字幕",
+            "data": "1\n00:00:01,000 --> 00:00:03,000\nFixture subtitle.\n\n"
+          }
+        ]
+      }
+    },
+    "BV1nosub": {
+      "id": "BV1nosub",
+      "title": "No subtitle fixture",
+      "uploader": "Fixture author",
+      "timestamp": 1786180600,
+      "description": "No subtitle description.",
+      "thumbnail": "https://i0.hdslb.com/fixture-cover-2.jpg",
+      "subtitles": {}
+    },
+    "BV1multi": {
+      "_type": "playlist",
+      "id": "BV1multi",
+      "title": "Multi-part fixture",
+      "uploader": "Fixture author",
+      "timestamp": 1786180500,
+      "entries": [
+        {
+          "id": "BV1multi_p1",
+          "title": "Part one",
+          "duration": 10.0,
+          "subtitles": {
+            "zh-CN": [
+              {
+                "ext": "srt",
+                "name": "AI 自动字幕",
+                "data": "1\n00:00:00,000 --> 00:00:02,000\nFirst part.\n\n"
+              }
+            ]
+          }
+        },
+        {
+          "id": "BV1multi_p2",
+          "title": "Part two",
+          "duration": 12.0,
+          "subtitles": {
+            "zh-CN": [
+              {
+                "ext": "srt",
+                "name": "AI 自动字幕",
+                "data": "1\n00:00:01,000 --> 00:00:03,000\nSecond part.\n\n"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "BV1private": {
+      "id": "BV1private",
+      "title": "Unavailable fixture",
+      "uploader": "Fixture author",
+      "availability": "private",
+      "subtitles": {}
+    }
+  }
+}

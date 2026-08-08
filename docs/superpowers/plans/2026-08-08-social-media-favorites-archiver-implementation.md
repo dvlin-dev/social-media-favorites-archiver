@@ -40,7 +40,7 @@ Update the `Status` cell as work progresses. Exactly one task may be `in_progres
 | 5 | Markdown renderer, note protection, and indexes | completed |
 | 6 | Asset safety, redaction, and cleanup barrier | completed |
 | 7 | Browser session and adapter contract | completed |
-| 8 | Bilibili adapter | pending |
+| 8 | Bilibili adapter | completed |
 | 9 | Local ASR backends | pending |
 | 10 | OCR and adaptive keyframes | pending |
 | 11 | ASR × OCR timeline fusion | pending |
@@ -281,16 +281,16 @@ social-media-favorites-archiver/
 - Create: `tests/integration/test_bilibili_fixture.py`
 - Create: `skill/social-media-favorites-archiver/references/platform-bilibili.md`
 
-- [ ] Record a sanitized, minimal fixture from an authorized test item or construct an equivalent contract fixture without private cookies, signed media URLs, or copyrighted media bytes.
-- [ ] Write failing adapter tests for collection discovery, favorite enumeration, canonical BV/AV identity, multi-part entries, unavailable/private items, and completeness flags.
-- [ ] Wrap current `yt-dlp` Bilibili favorites/item extractors and browser-cookie capability. Do not implement WBI signing, playback URL negotiation, or subtitle APIs independently.
-- [ ] Ensure cookie-bearing command arguments and yt-dlp diagnostic output are redacted.
-- [ ] Normalize native/human/AI subtitle provenance and segments; make subtitle availability a probe, not an assumption.
-- [ ] If no usable subtitle exists, schedule media/audio acquisition for local ASR without marking the item failed.
-- [ ] Test multi-part ordering and ensure all parts render as chapters in one primary note.
-- [ ] Run contract/integration tests and a read-only login/session check; defer real content E2E assertions to Task 18.
-- [ ] Commit with `feat: add Bilibili favorites adapter`.
-- [ ] Update the tracker and report results before continuing to Task 9.
+- [x] Record a sanitized, minimal fixture from an authorized test item or construct an equivalent contract fixture without private cookies, signed media URLs, or copyrighted media bytes.
+- [x] Write failing adapter tests for collection discovery, favorite enumeration, canonical BV/AV identity, multi-part entries, unavailable/private items, and completeness flags.
+- [x] Wrap current `yt-dlp` Bilibili favorites/item extractors and browser-cookie capability. Do not implement WBI signing, playback URL negotiation, or subtitle APIs independently.
+- [x] Ensure cookie-bearing command arguments and yt-dlp diagnostic output are redacted.
+- [x] Normalize native/human/AI subtitle provenance and segments; make subtitle availability a probe, not an assumption.
+- [x] If no usable subtitle exists, schedule media/audio acquisition for local ASR without marking the item failed.
+- [x] Test multi-part ordering and ensure all parts render as chapters in one primary note.
+- [x] Run contract/integration tests and a read-only login/session check; defer real content E2E assertions to Task 18.
+- [x] Commit with `feat: add Bilibili favorites adapter`.
+- [x] Update the tracker and report results before continuing to Task 9.
 
 ## Task 9: Local ASR backends
 

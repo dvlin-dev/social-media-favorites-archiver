@@ -259,6 +259,23 @@ class MarkdownRenderer:
             lines.extend(f"- {point}" for point in context.key_points)
             lines.append("")
         lines.extend(("## Original text", "", item.original_text or "_No source text._", ""))
+        raw_parts = item.platform_metadata.get("parts")
+        if isinstance(raw_parts, list) and raw_parts:
+            lines.extend(("## Parts", ""))
+            for part in raw_parts:
+                if not isinstance(part, dict):
+                    continue
+                position = part.get("position")
+                title = part.get("title")
+                duration = part.get("duration")
+                if isinstance(position, int) and isinstance(title, str):
+                    duration_text = (
+                        f" ({_format_timestamp(float(duration))})"
+                        if isinstance(duration, (int, float))
+                        else ""
+                    )
+                    lines.append(f"- {position:02d}. {title}{duration_text}")
+            lines.append("")
         if context.transcript:
             lines.extend(("## Transcript", ""))
             lines.extend(self._transcript_line(item, segment) for segment in context.transcript)
