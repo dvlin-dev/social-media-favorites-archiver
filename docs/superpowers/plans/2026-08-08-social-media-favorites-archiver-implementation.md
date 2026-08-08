@@ -42,7 +42,7 @@ Update the `Status` cell as work progresses. Exactly one task may be `in_progres
 | 7 | Browser session and adapter contract | completed |
 | 8 | Bilibili adapter | completed |
 | 9 | Local ASR backends | completed |
-| 10 | OCR and adaptive keyframes | pending |
+| 10 | OCR and adaptive keyframes | completed |
 | 11 | ASR × OCR timeline fusion | pending |
 | 12 | Two-stage sync, early-stop, and reconciliation | pending |
 | 13 | Xiaohongshu adapter | pending |
@@ -322,16 +322,16 @@ social-media-favorites-archiver/
 - Create: `tests/unit/test_keyframes.py`
 - Create: `tests/integration/test_rapidocr.py`
 
-- [ ] Define timestamped OCR blocks with bounding boxes, source image/frame, order, confidence, raw text, corrected text, and provenance.
-- [ ] Use RapidOCR with ONNX Runtime as the macOS default; keep PaddleOCR out of required 1.0 dependencies.
-- [ ] For image posts, preserve platform order, prefer verified original/high-quality images, and keep OCR output attached to its image.
-- [ ] Implement video candidate frames using scene changes plus a configurable maximum interval, then remove near-duplicates with perceptual hashing.
-- [ ] Add a text-region-change heuristic so persistent burned captions are captured even when the overall scene barely changes.
-- [ ] Apply domain terminology correction as auditable post-processing, not as a false claim of OCR model hotword support.
-- [ ] Add fixtures for Chinese text, rotated text, low contrast, repeated captions, scene cuts, image order, and no-text images.
-- [ ] Run focused OCR/keyframe tests and record local model/runtime compatibility in diagnostics documentation.
-- [ ] Commit with `feat: add RapidOCR and adaptive keyframes`.
-- [ ] Update the tracker and report results before continuing to Task 11.
+- [x] Define timestamped OCR blocks with bounding boxes, source image/frame, order, confidence, raw text, corrected text, and provenance.
+- [x] Use RapidOCR with ONNX Runtime as the macOS default; keep PaddleOCR out of required 1.0 dependencies.
+- [x] For image posts, preserve platform order, prefer verified original/high-quality images, and keep OCR output attached to its image.
+- [x] Implement video candidate frames using scene changes plus a configurable maximum interval, then remove near-duplicates with perceptual hashing.
+- [x] Add a text-region-change heuristic so persistent burned captions are captured even when the overall scene barely changes.
+- [x] Apply domain terminology correction as auditable post-processing, not as a false claim of OCR model hotword support.
+- [x] Add fixtures for Chinese text, rotated text, low contrast, repeated captions, scene cuts, image order, and no-text images.
+- [x] Run focused OCR/keyframe tests and record local model/runtime compatibility in diagnostics documentation.
+- [x] Commit with `feat: add RapidOCR and adaptive keyframes`.
+- [x] Update the tracker and report results before continuing to Task 11.
 
 ## Task 11: ASR × OCR timeline fusion
 
