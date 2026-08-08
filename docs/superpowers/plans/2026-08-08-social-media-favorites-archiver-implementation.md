@@ -49,7 +49,7 @@ Update the `Status` cell as work progresses. Exactly one task may be `in_progres
 | 14 | Douyin adapter | completed |
 | 15 | Optional OpenAI-compatible enrichment | completed |
 | 16 | CLI, scheduling, and run reports | completed |
-| 17 | Automated hardening and sanitized fixtures | pending |
+| 17 | Automated hardening and sanitized fixtures | completed |
 | 18 | Three-platform live end-to-end validation | pending |
 | 19 | Skill packaging and trigger evaluations | pending |
 | 20 | User documentation and GitHub 1.0 release | pending |
@@ -463,16 +463,16 @@ social-media-favorites-archiver/
 - Create: `SECURITY.md`
 - Create: `CONTRIBUTING.md`
 
-- [ ] Audit every test fixture and add an automated denylist/entropy/privacy test for cookies, bearer tokens, common key formats, signed query parameters, private profile paths, and unapproved media.
-- [ ] Add deterministic fake adapters that exercise all platform content shapes without live network access.
-- [ ] Run unit, contract, and integration groups separately in CI; mark heavyweight local-model and live tests opt-in.
-- [ ] Add coverage reporting and set an evidence-based threshold that cannot be met by excluding core orchestration, storage, safety, or processing modules.
-- [ ] Add dependency/license inventory checks and document third-party model licenses separately from the project's code license.
-- [ ] Document responsible use, personal-account scope, no anti-bot bypass, private vulnerability reporting, and redaction expectations.
-- [ ] Run `uv run ruff check .`, `uv run mypy src`, `uv run pytest -q`, and the built package install test in a temporary virtual environment.
-- [ ] Confirm G1 and G2 are satisfied before live content testing.
-- [ ] Commit with `test: harden CI fixtures and security boundaries`.
-- [ ] Update the tracker and report results before continuing to Task 18.
+- [x] Audit every test fixture and add an automated denylist/entropy/privacy test for cookies, bearer tokens, common key formats, signed query parameters, private profile paths, and unapproved media.
+- [x] Add deterministic fake adapters that exercise all platform content shapes without live network access.
+- [x] Run unit, contract, and integration groups separately in CI; mark heavyweight local-model and live tests opt-in.
+- [x] Add coverage reporting and set an evidence-based threshold that cannot be met by excluding core orchestration, storage, safety, or processing modules.
+- [x] Add dependency/license inventory checks and document third-party model licenses separately from the project's code license.
+- [x] Document responsible use, personal-account scope, no anti-bot bypass, private vulnerability reporting, and redaction expectations.
+- [x] Run `uv run ruff check .`, `uv run mypy src`, `uv run pytest -q`, and the built package install test in a temporary virtual environment.
+- [x] Confirm G1 and G2 are satisfied before live content testing.
+- [x] Commit with `test: harden CI fixtures and security boundaries`.
+- [x] Update the tracker and report results before continuing to Task 18.
 
 ## Task 18: Three-platform live end-to-end validation
 

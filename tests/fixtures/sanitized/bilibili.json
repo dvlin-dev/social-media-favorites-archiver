@@ -1,4 +1,9 @@
 {
+  "evidence": {
+    "authorized_session_observed": true,
+    "captured_at": "2026-08-08",
+    "values": "synthetic-placeholders-only"
+  },
   "collections": [
     {
       "id": "fav-001",

@@ -1,4 +1,8 @@
 {
+  "evidence": {
+    "source": "hand-authored-regression-cases",
+    "values": "synthetic-placeholders-only"
+  },
   "cases": [
     {
       "name": "exact duplicate",

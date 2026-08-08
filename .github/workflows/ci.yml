@@ -3,20 +3,34 @@ name: CI
 on:
   push:
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  test:
-    name: ${{ matrix.os }} / Python ${{ matrix.python-version }}
+  quality:
+    name: Ruff, mypy, and lockfile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - run: uv sync --locked --group dev
+      - run: uv lock --check
+      - run: uv run ruff check .
+      - run: uv run mypy src
+
+  unit-tests:
+    name: Unit / ${{ matrix.os }} / Python ${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-14]
         python-version: ["3.11", "3.12"]
-
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
@@ -24,7 +38,79 @@ jobs:
           python-version: ${{ matrix.python-version }}
           enable-cache: true
       - run: uv sync --locked --group dev
-      - run: uv run ruff check .
-      - run: uv run mypy src
-      - run: uv run pytest
+      - run: uv run pytest tests/unit -q -m "not heavyweight and not live"
+
+  contract-tests:
+    name: Contract / Python 3.12
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - run: uv sync --locked --group dev
+      - run: uv run pytest tests/contract -q -m "not heavyweight and not live"
+
+  integration-tests:
+    name: Integration / Python 3.12
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - run: uv sync --locked --group dev
+      - run: uv run pytest tests/integration -q -m "not heavyweight and not live"
+
+  privacy-tests:
+    name: Sanitized fixture privacy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - run: uv sync --locked --group dev
+      - run: uv run pytest tests/test_fixture_privacy.py -q -m "not heavyweight and not live"
+
+  coverage:
+    name: Whole-package coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - run: uv sync --locked --group dev
+      - run: >-
+          uv run pytest -q -m "not heavyweight and not live"
+          --cov=social_media_favorites_archiver
+          --cov-report=term-missing
+          --cov-report=xml
+          --cov-fail-under=70
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-xml
+          path: coverage.xml
+          if-no-files-found: error
+
+  package-and-licenses:
+    name: Package install and dependency licenses
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - run: uv sync --locked --group dev
+      - run: uv run python scripts/check_dependency_licenses.py
+      - run: uv build --out-dir "${RUNNER_TEMP}/smfa-dist"
+      - run: uv venv "${RUNNER_TEMP}/smfa-venv" --python 3.12
+      - run: uv pip install --python "${RUNNER_TEMP}/smfa-venv/bin/python" "${RUNNER_TEMP}"/smfa-dist/*.whl
+      - run: "${RUNNER_TEMP}/smfa-venv/bin/smfa" --help
 
