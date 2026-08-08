@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+import asyncio
 import hashlib
 import json
 import sqlite3
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from datetime import UTC, datetime
 from typing import cast
 from uuid import uuid4
@@ -49,6 +50,7 @@ class SyncOptions(BaseModel):
 
     early_stop_threshold: int = Field(default=20, ge=1)
     force_full_sync: bool = False
+    item_limit: int | None = Field(default=None, ge=1)
 
 
 class SyncResult(BaseModel):
@@ -63,6 +65,7 @@ class SyncResult(BaseModel):
     jobs_enqueued: int = Field(ge=0)
     memberships_removed: int = Field(ge=0)
     early_stopped: bool
+    limited: bool = False
     enumeration_complete: bool
 
 
@@ -145,7 +148,7 @@ class SyncOrchestrator:
         *,
         status: str,
         complete: bool,
-        stats: dict[str, int | bool],
+        stats: Mapping[str, object],
         finished_at: datetime,
     ) -> None:
         with self.database.connect() as connection:
@@ -162,6 +165,27 @@ class SyncOrchestrator:
                     json.dumps(stats, sort_keys=True, separators=(",", ":")),
                     run_id,
                 ),
+            )
+
+    def _checkpoint_run(
+        self,
+        run_id: str,
+        *,
+        collection: Collection,
+        cursor: str | None,
+        references_observed: int,
+        observed_at: datetime,
+    ) -> None:
+        """Persist a private local restart checkpoint without exposing it in reports."""
+        stats = {
+            "checkpoint_collection": collection.canonical_id,
+            "checkpoint_cursor": cursor,
+            "references_observed": references_observed,
+        }
+        with self.database.connect() as connection:
+            connection.execute(
+                "UPDATE runs SET stats_json = ? WHERE id = ? AND status = 'running'",
+                (json.dumps(stats, sort_keys=True, separators=(",", ":")), run_id),
             )
 
     def _known_state(self, canonical_id: str, collection_id: int) -> sqlite3.Row | None:
@@ -293,10 +317,18 @@ class SyncOrchestrator:
         early_stop_evidence = True
         reported_total: int | None = None
         early_stopped = False
+        limited = False
         enumeration_complete = False
 
         try:
             while True:
+                self._checkpoint_run(
+                    run_id,
+                    collection=collection,
+                    cursor=cursor,
+                    references_observed=references_observed,
+                    observed_at=observed_at,
+                )
                 page = await adapter.list_favorites(collection, cursor)
                 if cursor is not None and page.next_cursor == cursor:
                     raise ValueError("adapter repeated a pagination cursor")
@@ -311,6 +343,12 @@ class SyncOrchestrator:
                     elif reported_total != page.total_count:
                         early_stop_evidence = False
                 for page_index, reference in enumerate(page.items):
+                    if (
+                        settings.item_limit is not None
+                        and references_observed >= settings.item_limit
+                    ):
+                        limited = True
+                        break
                     if reference.platform != adapter.platform:
                         raise ValueError("favorite reference platform does not match adapter")
                     references_observed += 1
@@ -388,6 +426,15 @@ class SyncOrchestrator:
                     ):
                         early_stopped = True
                         break
+                    if (
+                        settings.item_limit is not None
+                        and references_observed >= settings.item_limit
+                        and (page_index + 1 < len(page.items) or not page.complete)
+                    ):
+                        limited = True
+                        break
+                if limited:
+                    break
                 if early_stopped:
                     break
                 if page.complete:
@@ -412,10 +459,17 @@ class SyncOrchestrator:
                 "jobs_enqueued": jobs_enqueued,
                 "memberships_removed": memberships_removed,
                 "early_stopped": early_stopped,
+                "limited": limited,
             }
             self._finish_run(
                 run_id,
-                status="succeeded" if enumeration_complete else "early_stopped",
+                status=(
+                    "succeeded"
+                    if enumeration_complete
+                    else "limited"
+                    if limited
+                    else "early_stopped"
+                ),
                 complete=enumeration_complete,
                 stats=stats,
                 finished_at=self._now(),
@@ -430,8 +484,22 @@ class SyncOrchestrator:
                 jobs_enqueued=jobs_enqueued,
                 memberships_removed=memberships_removed,
                 early_stopped=early_stopped,
+                limited=limited,
                 enumeration_complete=enumeration_complete,
             )
+        except (KeyboardInterrupt, asyncio.CancelledError):
+            self._finish_run(
+                run_id,
+                status="cancelled",
+                complete=False,
+                stats={
+                    "references_observed": references_observed,
+                    "checkpoint_collection": collection.canonical_id,
+                    "checkpoint_cursor": cursor,
+                },
+                finished_at=self._now(),
+            )
+            raise
         except BaseException:
             self._finish_run(
                 run_id,

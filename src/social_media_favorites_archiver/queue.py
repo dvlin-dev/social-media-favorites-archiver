@@ -407,3 +407,54 @@ class JobQueue:
             diagnostic_code=diagnostic_code,
             now=now,
         )
+
+    def retry(self, job_id: str, *, now: datetime | None = None) -> JobRecord:
+        """Explicitly requeue a failed, blocked, auth, or retryable job."""
+        current_time = now or _now()
+        with self.database.transaction(immediate=True) as connection:
+            row = connection.execute("SELECT * FROM jobs WHERE id = ?", (job_id,)).fetchone()
+            if row is None:
+                raise KeyError(job_id)
+            current_status = JobStatus(row["status"])
+            if current_status not in {
+                JobStatus.RETRYABLE,
+                JobStatus.NEEDS_AUTH,
+                JobStatus.BLOCKED,
+                JobStatus.FAILED,
+            }:
+                raise InvalidJobTransition(
+                    f"job is not explicitly retryable: {current_status.value}"
+                )
+            connection.execute(
+                """
+                UPDATE jobs
+                SET status = 'pending', next_attempt_at = NULL,
+                    lease_owner = NULL, lease_until = NULL, updated_at = ?
+                WHERE id = ?
+                """,
+                (_timestamp(current_time), job_id),
+            )
+            updated = connection.execute(
+                "SELECT * FROM jobs WHERE id = ?", (job_id,)
+            ).fetchone()
+        if updated is None:
+            raise RuntimeError("retried job disappeared")
+        return self._from_row(updated)
+
+    def release_cancelled(
+        self,
+        job_id: str,
+        worker_id: str,
+        *,
+        now: datetime | None = None,
+    ) -> JobRecord:
+        """Release an owned lease immediately when foreground work is cancelled."""
+        current_time = now or _now()
+        return self._owned_transition(
+            job_id,
+            worker_id,
+            JobStatus.RETRYABLE,
+            diagnostic_code="worker.cancelled",
+            next_attempt_at=current_time,
+            now=current_time,
+        )

@@ -48,7 +48,7 @@ Update the `Status` cell as work progresses. Exactly one task may be `in_progres
 | 13 | Xiaohongshu adapter | completed |
 | 14 | Douyin adapter | completed |
 | 15 | Optional OpenAI-compatible enrichment | completed |
-| 16 | CLI, scheduling, and run reports | pending |
+| 16 | CLI, scheduling, and run reports | completed |
 | 17 | Automated hardening and sanitized fixtures | pending |
 | 18 | Three-platform live end-to-end validation | pending |
 | 19 | Skill packaging and trigger evaluations | pending |
@@ -443,15 +443,15 @@ social-media-favorites-archiver/
 - Create: `tests/integration/test_cli_sync.py`
 - Create: `skill/social-media-favorites-archiver/references/troubleshooting.md`
 
-- [ ] Implement and test `smfa doctor`, `login`, `collections`, `sync`, `status`, `retry`, `cleanup`, and `report` with stable exit codes and `--json` where automation benefits.
-- [ ] Make `smfa sync` expose platform/collection filters, metadata-only mode, foreground drain mode, force-full mode, item limits for validation, and dry-run/read-only inspection where applicable.
-- [ ] Show skeleton enumeration progress separately from heavy queue progress.
-- [ ] Generate a sanitized per-run report with counts by platform/type/stage, failures, needs-auth actions, cleanup results, durations, and next-safe commands.
-- [ ] Add graceful cancellation that checkpoints cursors, releases or expires leases safely, and never runs false removal reconciliation.
-- [ ] Document optional launchd/systemd scheduling examples that invoke the CLI and never embed secrets in service files.
-- [ ] Run CLI integration tests using fake adapters and a temporary vault/DB.
-- [ ] Commit with `feat: complete CLI and run reporting`.
-- [ ] Update the tracker and report results before continuing to Task 17.
+- [x] Implement and test `smfa doctor`, `login`, `collections`, `sync`, `status`, `retry`, `cleanup`, and `report` with stable exit codes and `--json` where automation benefits.
+- [x] Make `smfa sync` expose platform/collection filters, metadata-only mode, foreground drain mode, force-full mode, item limits for validation, and dry-run/read-only inspection where applicable.
+- [x] Show skeleton enumeration progress separately from heavy queue progress.
+- [x] Generate a sanitized per-run report with counts by platform/type/stage, failures, needs-auth actions, cleanup results, durations, and next-safe commands.
+- [x] Add graceful cancellation that checkpoints cursors, releases or expires leases safely, and never runs false removal reconciliation.
+- [x] Document optional launchd/systemd scheduling examples that invoke the CLI and never embed secrets in service files.
+- [x] Run CLI integration tests using fake adapters and a temporary vault/DB.
+- [x] Commit with `feat: complete CLI and run reporting`.
+- [x] Update the tracker and report results before continuing to Task 17.
 
 ## Task 17: Automated hardening and sanitized fixtures
 

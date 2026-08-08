@@ -175,6 +175,81 @@ class Database:
             raise RuntimeError(msg)
         return int(row[0])
 
+    def get_item(self, item_id: int) -> NormalizedItem:
+        """Reconstruct one normalized item and its durable assets for workers."""
+        with self.connect() as connection:
+            row = connection.execute("SELECT * FROM items WHERE id = ?", (item_id,)).fetchone()
+            asset_rows = connection.execute(
+                "SELECT * FROM assets WHERE item_id = ? ORDER BY ordinal, id",
+                (item_id,),
+            ).fetchall()
+            collection_rows = connection.execute(
+                """
+                SELECT collections.canonical_id
+                FROM item_collections
+                JOIN collections ON collections.id = item_collections.collection_id
+                WHERE item_collections.item_id = ? AND item_collections.state = 'active'
+                ORDER BY collections.canonical_id
+                """,
+                (item_id,),
+            ).fetchall()
+        if row is None:
+            raise KeyError(item_id)
+        assets = [
+            {
+                "asset_id": asset["asset_id"],
+                "ordinal": asset["ordinal"],
+                "kind": asset["kind"],
+                "source_url": asset["source_url"],
+                "local_path": asset["local_path"],
+                "sha256": asset["sha256"],
+                "mime_type": asset["mime_type"],
+                "size_bytes": asset["size_bytes"],
+                "quality": asset["quality"],
+            }
+            for asset in asset_rows
+        ]
+        return NormalizedItem.model_validate(
+            {
+                "canonical_id": row["canonical_id"],
+                "platform": row["platform"],
+                "content_type": row["content_type"],
+                "source_url": row["source_url"],
+                "title": row["title"],
+                "author": row["author"],
+                "author_url": row["author_url"],
+                "published_at": row["published_at"],
+                "first_seen_at": row["first_seen_at"],
+                "last_seen_at": row["last_seen_at"],
+                "source_availability": row["source_availability"],
+                "collection_canonical_ids": tuple(
+                    str(collection["canonical_id"]) for collection in collection_rows
+                ),
+                "original_text": row["original_text"],
+                "native_subtitles": json.loads(str(row["native_subtitles_json"])),
+                "assets": assets,
+                "content_blocks": json.loads(str(row["content_blocks_json"])),
+                "source_revision": row["source_revision"],
+                "metadata_fingerprint": row["metadata_fingerprint"],
+                "platform_metadata": json.loads(str(row["platform_metadata_json"])),
+                "adapter_version": row["adapter_version"],
+            }
+        )
+
+    def active_collection_names(self, item_id: int) -> tuple[str, ...]:
+        with self.connect() as connection:
+            rows = connection.execute(
+                """
+                SELECT collections.name
+                FROM item_collections
+                JOIN collections ON collections.id = item_collections.collection_id
+                WHERE item_collections.item_id = ? AND item_collections.state = 'active'
+                ORDER BY collections.canonical_id
+                """,
+                (item_id,),
+            ).fetchall()
+        return tuple(str(row["name"]) for row in rows)
+
     def upsert_collection(self, collection: Collection) -> int:
         now = _timestamp()
         with self.connect() as connection:
@@ -314,6 +389,104 @@ class Database:
         if row is None:
             raise RuntimeError("enrichment upsert did not return an identity")
         return str(row[0])
+
+    def latest_enrichment(self, item_id: int) -> dict[str, object] | None:
+        with self.connect() as connection:
+            row = connection.execute(
+                """
+                SELECT result_json FROM enrichments
+                WHERE item_id = ? ORDER BY created_at DESC, id DESC LIMIT 1
+                """,
+                (item_id,),
+            ).fetchone()
+        if row is None:
+            return None
+        decoded = json.loads(str(row["result_json"]))
+        return decoded if isinstance(decoded, dict) else None
+
+    def upsert_extraction(
+        self,
+        item_id: int,
+        *,
+        extraction_type: str,
+        processor_version: str,
+        input_fingerprint: str,
+        config_hash: str,
+        payload: object,
+        created_at: datetime | None = None,
+    ) -> str:
+        """Persist a deterministic processor result and its content hash."""
+        payload_json = _json(payload)
+        result_hash = f"sha256:{hashlib.sha256(payload_json.encode()).hexdigest()}"
+        identity = json.dumps(
+            {
+                "extraction_type": extraction_type,
+                "processor_version": processor_version,
+                "input_fingerprint": input_fingerprint,
+                "config_hash": config_hash,
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        extraction_id = f"extraction:{hashlib.sha256(identity.encode()).hexdigest()}"
+        with self.connect() as connection:
+            connection.execute(
+                """
+                INSERT INTO extractions (
+                    id, item_id, extraction_type, processor_version,
+                    input_fingerprint, config_hash, result_hash,
+                    payload_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(
+                    extraction_type, input_fingerprint, processor_version, config_hash
+                ) DO UPDATE SET
+                    item_id = excluded.item_id,
+                    result_hash = excluded.result_hash,
+                    payload_json = excluded.payload_json,
+                    created_at = excluded.created_at
+                """,
+                (
+                    extraction_id,
+                    item_id,
+                    extraction_type,
+                    processor_version,
+                    input_fingerprint,
+                    config_hash,
+                    result_hash,
+                    payload_json,
+                    _timestamp(created_at),
+                ),
+            )
+            row = connection.execute(
+                """
+                SELECT id FROM extractions
+                WHERE extraction_type = ? AND input_fingerprint = ?
+                  AND processor_version = ? AND config_hash = ?
+                """,
+                (extraction_type, input_fingerprint, processor_version, config_hash),
+            ).fetchone()
+        if row is None:
+            raise RuntimeError("extraction upsert did not return an identity")
+        return str(row["id"])
+
+    def latest_extraction(
+        self,
+        item_id: int,
+        extraction_type: str,
+    ) -> dict[str, object] | None:
+        with self.connect() as connection:
+            row = connection.execute(
+                """
+                SELECT payload_json FROM extractions
+                WHERE item_id = ? AND extraction_type = ?
+                ORDER BY created_at DESC, id DESC LIMIT 1
+                """,
+                (item_id, extraction_type),
+            ).fetchone()
+        if row is None:
+            return None
+        decoded = json.loads(str(row["payload_json"]))
+        return decoded if isinstance(decoded, dict) else None
 
     def set_membership(
         self,
