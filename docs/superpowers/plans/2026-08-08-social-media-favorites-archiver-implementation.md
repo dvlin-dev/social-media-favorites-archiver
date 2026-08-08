@@ -52,8 +52,8 @@ Update the `Status` cell as work progresses. Exactly one task may be `in_progres
 | 17 | Automated hardening and sanitized fixtures | completed |
 | 18 | Three-platform live end-to-end validation | completed |
 | 19 | Skill packaging and trigger evaluations | completed |
-| 20 | User documentation and GitHub 1.0 release | in_progress |
-| 21 | Skills.sh installation and discovery | pending |
+| 20 | User documentation and GitHub 1.0 release | completed |
+| 21 | Skills.sh installation and discovery | in_progress |
 | 22 | ClawHub publication and verification | pending |
 | 23 | Clean-room post-publication verification | pending |
 | 24 | Final audit and handoff | pending |
@@ -561,11 +561,11 @@ The user explicitly narrowed live heavy processing on 2026-08-09 to one represen
 - [x] Change the Skill's CLI install reference from its development target to the prospective immutable `v1.0.0` tag before creating the release commit; validate bundle structure locally without claiming the tag already exists.
 - [x] Build wheel/sdist, inspect package contents, install the wheel in a fresh temporary environment, and run `smfa --help` plus `smfa doctor`.
 - [x] Run the full test/lint/type/privacy suite and verify the worktree contains no live artifacts.
-- [ ] Commit the exact release tree, create annotated tag `v1.0.0` on that commit, push commit and tag, and create a GitHub release with accurate support claims and checksums/artifacts as configured.
-- [ ] After the tag is public, rerun the Skill's real public CLI installation command. If a correction is required, issue a patch release rather than moving or rewriting `v1.0.0`.
-- [ ] Record the GitHub release URL, commit/tag, artifact checks, and gates in the release verification document.
-- [ ] Commit any post-release documentation-only evidence with `docs: record 1.0 release verification` and push.
-- [ ] Update the tracker and report results before continuing to Task 21.
+- [x] Commit the exact release tree, create annotated tag `v1.0.0` on that commit, push commit and tag, and create a GitHub release with accurate support claims and checksums/artifacts as configured.
+- [x] After the tag is public, rerun the Skill's real public CLI installation command. If a correction is required, issue a patch release rather than moving or rewriting `v1.0.0`.
+- [x] Record the GitHub release URL, commit/tag, artifact checks, and gates in the release verification document.
+- [x] Commit any post-release documentation-only evidence with `docs: record 1.0 release verification` and push.
+- [x] Update the tracker and report results before continuing to Task 21.
 
 ## Task 21: Skills.sh installation and discovery
 
