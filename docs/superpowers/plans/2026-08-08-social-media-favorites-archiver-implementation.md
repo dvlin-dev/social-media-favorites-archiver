@@ -53,8 +53,8 @@ Update the `Status` cell as work progresses. Exactly one task may be `in_progres
 | 18 | Three-platform live end-to-end validation | completed |
 | 19 | Skill packaging and trigger evaluations | completed |
 | 20 | User documentation and GitHub 1.0 release | completed |
-| 21 | Skills.sh installation and discovery | in_progress |
-| 22 | ClawHub publication and verification | pending |
+| 21 | Skills.sh installation and discovery | completed |
+| 22 | ClawHub publication and verification | in_progress |
 | 23 | Clean-room post-publication verification | pending |
 | 24 | Final audit and handoff | pending |
 
@@ -575,15 +575,15 @@ The user explicitly narrowed live heavy processing on 2026-08-09 to one represen
 
 Current official model: Skills.sh discovers skills hosted in GitHub repositories through the `skills` CLI and anonymous installation telemetry; there is no separate source upload step. Recheck the current [Skills.sh documentation](https://skills.sh/docs), [CLI reference](https://skills.sh/docs/cli), and [FAQ](https://skills.sh/docs/faq) before publication in case the registry workflow changed.
 
-- [ ] From a fresh temporary directory outside the repository, inspect available skills with `npx -y skills add dvlin-dev/social-media-favorites-archiver --list`.
-- [ ] Install only the nested Skill with `npx -y skills add dvlin-dev/social-media-favorites-archiver --skill social-media-favorites-archiver --copy -y`.
-- [ ] Inspect the installed copy and verify its name, description, references, version/install target, optional environment declarations, and absence of unrelated repo/private files.
-- [ ] Run a clean Agent/CLI discovery smoke test using one positive and one negative prompt from `evals/evals.json`.
-- [ ] Check discovery immediately after the telemetry-generating installation, then after 15 and 60 minutes if needed. Verify the actual URL rather than assuming it; a likely route is `https://skills.sh/dvlin-dev/social-media-favorites-archiver/social-media-favorites-archiver`.
-- [ ] Record exact install command, observed Skills.sh URL/status, date, and non-sensitive output in the release verification document.
-- [ ] If discovery does not appear after a reasonable index window, verify the public repo/default branch/SKILL structure and CLI telemetry behavior, fix the packaging issue, repeat installation, and report the remaining external indexing delay honestly.
-- [ ] Commit with `docs: verify Skills.sh distribution` and push.
-- [ ] Update the tracker and report results before continuing to Task 22.
+- [x] From a fresh temporary directory outside the repository, inspect available skills with `npx -y skills add dvlin-dev/social-media-favorites-archiver --list`.
+- [x] Install only the nested Skill with `npx -y skills add dvlin-dev/social-media-favorites-archiver --skill social-media-favorites-archiver --copy -y`.
+- [x] Inspect the installed copy and verify its name, description, references, version/install target, optional environment declarations, and absence of unrelated repo/private files.
+- [x] Run a clean Agent/CLI discovery smoke test using one positive and one negative prompt from `evals/evals.json`.
+- [x] Check discovery immediately after the telemetry-generating installation, then after 15 and 60 minutes if needed. Verify the actual URL rather than assuming it; a likely route is `https://skills.sh/dvlin-dev/social-media-favorites-archiver/social-media-favorites-archiver`.
+- [x] Record exact install command, observed Skills.sh URL/status, date, and non-sensitive output in the release verification document.
+- [x] If discovery does not appear after a reasonable index window, verify the public repo/default branch/SKILL structure and CLI telemetry behavior, fix the packaging issue, repeat installation, and report the remaining external indexing delay honestly.
+- [x] Commit with `docs: verify Skills.sh distribution` and push.
+- [x] Update the tracker and report results before continuing to Task 22.
 
 ## Task 22: ClawHub publication and verification
 
