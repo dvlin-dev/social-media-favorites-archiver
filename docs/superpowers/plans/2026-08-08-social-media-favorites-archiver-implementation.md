@@ -36,7 +36,7 @@ Update the `Status` cell as work progresses. Exactly one task may be `in_progres
 | 1 | Python project scaffold and CI | completed |
 | 2 | Configuration and doctor command | completed |
 | 3 | Domain model and SQLite schema | completed |
-| 4 | Durable queue, leases, and state machine | pending |
+| 4 | Durable queue, leases, and state machine | completed |
 | 5 | Markdown renderer, note protection, and indexes | pending |
 | 6 | Asset safety, redaction, and cleanup barrier | pending |
 | 7 | Browser session and adapter contract | pending |
@@ -197,15 +197,15 @@ social-media-favorites-archiver/
 - Create: `tests/integration/test_queue_recovery.py`
 - Modify: `src/social_media_favorites_archiver/storage/database.py`
 
-- [ ] Write failing tests for legal transitions among `pending`, `running`, `succeeded`, `retryable`, `needs_auth`, `blocked`, and `failed`.
-- [ ] Write failing concurrency tests proving only one worker can lease a job/item, an expired lease is recoverable, heartbeat extends an active lease, and retry uses capped exponential backoff with jitter.
-- [ ] Implement atomic SQLite lease acquisition using `lease_owner`, `lease_until`, attempt count, next-attempt time, and last sanitized diagnostic code.
-- [ ] Make each processing stage independently resumable and idempotent; a worker crash must not force a complete item restart.
-- [ ] Keep platform-wide `needs_auth` from blocking unrelated platforms.
-- [ ] Add a per-canonical-item file lock around filesystem rendering and cleanup as a second boundary beyond DB leasing.
-- [ ] Run recovery and concurrency tests repeatedly with `for i in {1..10}; do uv run pytest tests/unit/test_queue.py tests/integration/test_queue_recovery.py -q || break; done` and require all ten runs to pass.
-- [ ] Commit with `feat: add recoverable job queue and leases`.
-- [ ] Update the tracker and report results before continuing to Task 5.
+- [x] Write failing tests for legal transitions among `pending`, `running`, `succeeded`, `retryable`, `needs_auth`, `blocked`, and `failed`.
+- [x] Write failing concurrency tests proving only one worker can lease a job/item, an expired lease is recoverable, heartbeat extends an active lease, and retry uses capped exponential backoff with jitter.
+- [x] Implement atomic SQLite lease acquisition using `lease_owner`, `lease_until`, attempt count, next-attempt time, and last sanitized diagnostic code.
+- [x] Make each processing stage independently resumable and idempotent; a worker crash must not force a complete item restart.
+- [x] Keep platform-wide `needs_auth` from blocking unrelated platforms.
+- [x] Add a per-canonical-item file lock around filesystem rendering and cleanup as a second boundary beyond DB leasing.
+- [x] Run recovery and concurrency tests repeatedly with `for i in {1..10}; do uv run pytest tests/unit/test_queue.py tests/integration/test_queue_recovery.py -q || break; done` and require all ten runs to pass.
+- [x] Commit with `feat: add recoverable job queue and leases`.
+- [x] Update the tracker and report results before continuing to Task 5.
 
 ## Task 5: Markdown renderer, note protection, and indexes
 

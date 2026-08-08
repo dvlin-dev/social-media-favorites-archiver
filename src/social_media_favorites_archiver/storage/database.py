@@ -56,6 +56,14 @@ class Database:
         finally:
             connection.close()
 
+    @contextmanager
+    def transaction(self, *, immediate: bool = False) -> Iterator[sqlite3.Connection]:
+        """Open a transaction, optionally reserving the SQLite writer immediately."""
+        with self.connect() as connection:
+            if immediate:
+                connection.execute("BEGIN IMMEDIATE")
+            yield connection
+
     def current_schema_version(self) -> int:
         with self.connect() as connection:
             exists = connection.execute(
@@ -88,8 +96,7 @@ class Database:
             raise ValueError(msg)
         for version in range(current + 1, target + 1):
             statements = MIGRATIONS[version]
-            with self.connect() as connection:
-                connection.execute("BEGIN IMMEDIATE")
+            with self.transaction(immediate=True) as connection:
                 for statement in statements:
                     connection.execute(statement)
                 connection.execute(
