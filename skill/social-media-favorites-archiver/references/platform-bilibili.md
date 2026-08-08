@@ -21,4 +21,4 @@ Development-machine smoke benchmark on 2026-08-08:
 - Result: speech outcome with one bounded timestamped segment
 - Model cache: 141.9 MiB; generated input/intermediate disk use: 0.2 MiB
 
-This is a compatibility smoke test, not a universal speed or accuracy claim. The tiny model and synthetic voice are less representative than real saved videos; Task 18 must validate the bounded live fallback path, and users may select a larger local model when accuracy matters.
+This is a compatibility smoke test, not a universal speed or accuracy claim. The tiny model and synthetic voice are less representative than real saved videos, and users may select a larger local model when accuracy matters. The lightweight Task 18 run completed a real native-subtitle item and inventoried real no-subtitle candidates, but did not heavy-process the live ASR fallback path; that gap remains explicit in the live verification report.

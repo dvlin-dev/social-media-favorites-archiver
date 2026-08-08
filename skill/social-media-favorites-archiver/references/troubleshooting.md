@@ -12,7 +12,7 @@ Run `smfa doctor` first. Its output is sanitized and reports OpenAI-compatible v
 
 `smfa sync` reports enumeration/skeleton progress separately from durable heavy-queue progress. `--metadata-only` leaves heavy jobs queued. `--foreground` consumes them in the invoking process. `--limit` is for representative validation and always disables removal reconciliation for that incomplete run. `--dry-run` discovers the selected collections without creating the vault or state database.
 
-If a sync is cancelled, the current collection cursor is checkpointed only in the local database, no active foreground lease is left behind, and the incomplete run cannot mark missing favorites as removed. Restart the same command; idempotent identities prevent duplicate notes.
+If a sync is cancelled, already completed skeletons and jobs remain durable, no active foreground lease is left behind, and the incomplete run cannot mark missing favorites as removed. Restart the same command; enumeration may restart from the collection root, while idempotent identities prevent duplicate notes.
 
 ## Browser and platform recovery
 

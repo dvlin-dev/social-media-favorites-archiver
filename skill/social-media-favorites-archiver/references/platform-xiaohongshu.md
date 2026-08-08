@@ -17,8 +17,8 @@ The committed `tests/fixtures/sanitized/xiaohongshu.json` recreates those shapes
 
 - Pure-text notes remain articles.
 - One-image notes remain image posts; multi-image notes remain ordered galleries.
-- `imageList[].urlDefault` is preferred. A fallback quality marker is recorded only when that field is unavailable.
-- Static downloads pass the bounded MIME/length/hash store and local image decoding and dimension checks before becoming assets.
+- `imageList[].urlDefault` is preferred and recorded as a `page-default` rendition rather than an unverified original. Other fields receive a fallback marker.
+- Static downloads pass the bounded MIME/length/hash store, local image decoding, and source-aspect-ratio checks before becoming assets. Page renditions may be lower resolution than the source dimensions while preserving geometry.
 - Ordered image assets become ordered content blocks. Markdown renders OCR immediately below the corresponding image.
 - Videos probe the page for a real text track, but the normal no-track path is local ASR plus adaptive frame OCR and timeline fusion.
 - A missing identity, item list, completeness marker, image dimension, or usable media URL is a typed adapter failure. It never turns a partial result into a complete enumeration.

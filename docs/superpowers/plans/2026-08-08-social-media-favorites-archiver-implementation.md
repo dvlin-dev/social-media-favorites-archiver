@@ -51,8 +51,8 @@ Update the `Status` cell as work progresses. Exactly one task may be `in_progres
 | 16 | CLI, scheduling, and run reports | completed |
 | 17 | Automated hardening and sanitized fixtures | completed |
 | 18 | Three-platform live end-to-end validation | completed |
-| 19 | Skill packaging and trigger evaluations | in_progress |
-| 20 | User documentation and GitHub 1.0 release | pending |
+| 19 | Skill packaging and trigger evaluations | completed |
+| 20 | User documentation and GitHub 1.0 release | in_progress |
 | 21 | Skills.sh installation and discovery | pending |
 | 22 | ClawHub publication and verification | pending |
 | 23 | Clean-room post-publication verification | pending |
@@ -529,20 +529,20 @@ The user explicitly narrowed live heavy processing on 2026-08-09 to one represen
 - Create: `evals/evals.json`
 - Create: `tests/unit/test_skill_bundle.py`
 
-- [ ] Use the `skill-creator` methodology to draft, validate, and improve the Skill; read its current instructions before editing the bundle.
-- [ ] Keep the directory and frontmatter name exactly `social-media-favorites-archiver` using lowercase letters and hyphens.
-- [ ] Start with this 124-character one-line discovery description and change it only if trigger evaluation produces evidence: `Sync a user's Bilibili/B站, Xiaohongshu/小红书/RedNote, and Douyin/抖音 favorites into local Markdown/Obsidian with local ASR/OCR.`
-- [ ] Make `SKILL.md` concise: when to use, when not to use, safety constraints, environment check, installation/invocation, login pauses, progress behavior, and references for platform details.
-- [ ] Configure optional OpenAI variables under OpenClaw metadata as optional (`required: false`); never put optional enrichment variables in `requires.env`.
-- [ ] Make the Skill install/invoke the public Python CLI reproducibly, for example through `uv tool install git+https://github.com/dvlin-dev/social-media-favorites-archiver.git@v1.0.0` after the tag exists. Before the tag, test the local package or pinned commit and update the bundle during Task 20.
-- [ ] Put an MIT-0 license in the distributable Skill directory and document that the application source remains MIT. This matches ClawHub's Skill distribution terms without silently relicensing unrelated application code.
-- [ ] Keep the Skill bundle below ClawHub's 50 MB limit. Use `.clawhubignore` so tests, raw docs, application source, caches, and local evidence are not included when publishing the nested folder.
-- [ ] Add positive evals for Chinese and English personal-favorites backup/migration/organization requests across all three platforms.
-- [ ] Add negative evals for a single video transcription, a single-image OCR request, ordinary video summarization, public-account scraping, marketing copy, reposting, commenting, and unrelated bookmark products.
-- [ ] Run multiple trigger-eval passes, inspect false positives/negatives, refine only from evidence, and record scores in a sanitized evaluation report or test output.
-- [ ] Test bundle structure, name/parent match, description length, no secrets, valid references, optional env metadata, size, and install command.
-- [ ] Commit with `feat: package and evaluate agent skill`.
-- [ ] Update the tracker and report results before continuing to Task 20.
+- [x] Use the `skill-creator` methodology to draft, validate, and improve the Skill; read its current instructions before editing the bundle.
+- [x] Keep the directory and frontmatter name exactly `social-media-favorites-archiver` using lowercase letters and hyphens.
+- [x] Start with this 124-character one-line discovery description and change it only if trigger evaluation produces evidence: `Sync a user's Bilibili/B站, Xiaohongshu/小红书/RedNote, and Douyin/抖音 favorites into local Markdown/Obsidian with local ASR/OCR.`
+- [x] Make `SKILL.md` concise: when to use, when not to use, safety constraints, environment check, installation/invocation, login pauses, progress behavior, and references for platform details.
+- [x] Configure optional OpenAI variables under OpenClaw metadata as optional (`required: false`); never put optional enrichment variables in `requires.env`.
+- [x] Make the Skill install/invoke the public Python CLI reproducibly, for example through `uv tool install git+https://github.com/dvlin-dev/social-media-favorites-archiver.git@v1.0.0` after the tag exists. Before the tag, test the local package or pinned commit and update the bundle during Task 20.
+- [x] Put an MIT-0 license in the distributable Skill directory and document that the application source remains MIT. This matches ClawHub's Skill distribution terms without silently relicensing unrelated application code.
+- [x] Keep the Skill bundle below ClawHub's 50 MB limit. Use `.clawhubignore` so tests, raw docs, application source, caches, and local evidence are not included when publishing the nested folder.
+- [x] Add positive evals for Chinese and English personal-favorites backup/migration/organization requests across all three platforms.
+- [x] Add negative evals for a single video transcription, a single-image OCR request, ordinary video summarization, public-account scraping, marketing copy, reposting, commenting, and unrelated bookmark products.
+- [x] Run multiple trigger-eval passes, inspect false positives/negatives, refine only from evidence, and record scores in a sanitized evaluation report or test output.
+- [x] Test bundle structure, name/parent match, description length, no secrets, valid references, optional env metadata, size, and install command.
+- [x] Commit with `feat: package and evaluate agent skill`.
+- [x] Update the tracker and report results before continuing to Task 20.
 
 ## Task 20: User documentation and GitHub 1.0 release
 

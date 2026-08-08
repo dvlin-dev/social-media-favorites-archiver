@@ -1,0 +1,21 @@
+# The nested Skill publication contains only its concise instructions and references.
+tests/
+src/
+docs/
+work/
+evals/
+.git/
+.github/
+__pycache__/
+*.pyc
+*.db
+*.sqlite*
+*.log
+*.jsonl
+*.mp4
+*.webm
+*.wav
+*.jpg
+*.jpeg
+*.png
+*.webp

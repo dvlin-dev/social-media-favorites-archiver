@@ -1,0 +1,186 @@
+{
+  "skill_name": "social-media-favorites-archiver",
+  "description": "Trigger evaluation cases for personal favorites archiving boundaries.",
+  "evals": [
+    {
+      "id": 1,
+      "category": "all-platforms-zh",
+      "prompt": "我想把自己账号里的 B站、小红书和抖音收藏定期备份到 Obsidian，视频要在本机转写，图片也要 OCR，先帮我检查环境再开始。",
+      "should_trigger": true,
+      "expected_output": "Use the Skill and begin the privacy-safe doctor/login/metadata-first workflow.",
+      "files": [],
+      "expectations": ["Triggers for an authorized three-platform personal favorites archive."]
+    },
+    {
+      "id": 2,
+      "category": "all-platforms-en",
+      "prompt": "Migrate my own Bilibili, Xiaohongshu/RedNote, and Douyin saved collections into a local Markdown knowledge base, keeping transcription and OCR on this Mac.",
+      "should_trigger": true,
+      "expected_output": "Use the Skill for local-first multi-platform migration.",
+      "files": [],
+      "expectations": ["Triggers for an English personal saved-collection migration request."]
+    },
+    {
+      "id": 3,
+      "category": "bilibili-zh",
+      "prompt": "帮我把我自己的 Bilibili 收藏夹持续同步成 Markdown，字幕优先，没有字幕就本地 ASR，不要上传视频。",
+      "should_trigger": true,
+      "expected_output": "Use the Skill and route to Bilibili subtitle/ASR guidance.",
+      "files": [],
+      "expectations": ["Triggers for a Bilibili personal favorites collection archive."]
+    },
+    {
+      "id": 4,
+      "category": "bilibili-en",
+      "prompt": "Please organize the videos saved in my B站 favorites into Obsidian notes, preserving multipart chapters and doing fallback speech recognition locally.",
+      "should_trigger": true,
+      "expected_output": "Use the Skill for Bilibili collection organization.",
+      "files": [],
+      "expectations": ["Triggers despite mixed English and Chinese platform naming."]
+    },
+    {
+      "id": 5,
+      "category": "xiaohongshu-zh",
+      "prompt": "把我小红书收藏的文章、图文和视频整理到本地知识库，多图顺序不能乱，每张图下面做 OCR。",
+      "should_trigger": true,
+      "expected_output": "Use the Skill and route to Xiaohongshu ordered-content rules.",
+      "files": [],
+      "expectations": ["Triggers for a Xiaohongshu personal saved-note archive."]
+    },
+    {
+      "id": 6,
+      "category": "rednote-en",
+      "prompt": "Back up all posts I saved in RedNote to local Markdown, including gallery order, video transcript, and searchable OCR, without sending media to a cloud model.",
+      "should_trigger": true,
+      "expected_output": "Use the Skill for RedNote favorites backup.",
+      "files": [],
+      "expectations": ["Triggers on the RedNote alias and privacy constraints."]
+    },
+    {
+      "id": 7,
+      "category": "douyin-zh",
+      "prompt": "同步我个人抖音收藏到 Obsidian，口播和画面字幕要去重，但画面里独有的文字要保留。",
+      "should_trigger": true,
+      "expected_output": "Use the Skill and route to Douyin ASR/OCR fusion.",
+      "files": [],
+      "expectations": ["Triggers for a Douyin personal favorites fusion workflow."]
+    },
+    {
+      "id": 8,
+      "category": "douyin-en",
+      "prompt": "Archive my own Douyin favorites locally, with videos and image posts turned into searchable Obsidian notes and no anti-bot workarounds.",
+      "should_trigger": true,
+      "expected_output": "Use the Skill for an authorized Douyin archive.",
+      "files": [],
+      "expectations": ["Triggers for an English Douyin favorites request."]
+    },
+    {
+      "id": 9,
+      "category": "scheduled-incremental",
+      "prompt": "I already have an Obsidian vault for my social favorites. Set up a safe incremental sync for my Bilibili and Xiaohongshu collections every six hours, with manual login pauses.",
+      "should_trigger": true,
+      "expected_output": "Use the Skill and follow manual-first scheduling guidance.",
+      "files": [],
+      "expectations": ["Triggers for recurring personal collection synchronization."]
+    },
+    {
+      "id": 10,
+      "category": "resume-repair",
+      "prompt": "My three-platform favorites archive stopped after a QR prompt. Check the durable status, let me finish login, and resume without duplicating Markdown notes.",
+      "should_trigger": true,
+      "expected_output": "Use the Skill to repair authentication and resume safely.",
+      "files": [],
+      "expectations": ["Triggers for recovery of an existing archive workflow."]
+    },
+    {
+      "id": 11,
+      "category": "single-video-transcription",
+      "prompt": "Transcribe this one Bilibili video URL into Chinese text with timestamps.",
+      "should_trigger": false,
+      "expected_output": "Do not trigger; this is a single-video transcription task.",
+      "files": [],
+      "expectations": ["Rejects a single-link transcription request."]
+    },
+    {
+      "id": 12,
+      "category": "single-image-ocr",
+      "prompt": "Can you OCR the text in this Xiaohongshu screenshot and return plain text?",
+      "should_trigger": false,
+      "expected_output": "Do not trigger; use an image OCR workflow instead.",
+      "files": [],
+      "expectations": ["Rejects one-image OCR despite a platform keyword."]
+    },
+    {
+      "id": 13,
+      "category": "ordinary-video-summary",
+      "prompt": "Summarize the main argument in this Douyin clip and give me five bullet points.",
+      "should_trigger": false,
+      "expected_output": "Do not trigger; this is ordinary video summarization.",
+      "files": [],
+      "expectations": ["Rejects a single video summary request."]
+    },
+    {
+      "id": 14,
+      "category": "public-account-scraping",
+      "prompt": "Scrape every post and follower from a public Xiaohongshu influencer account so I can analyze their growth.",
+      "should_trigger": false,
+      "expected_output": "Do not trigger; public-account bulk scraping is out of scope.",
+      "files": [],
+      "expectations": ["Rejects unauthorized public-account scraping."]
+    },
+    {
+      "id": 15,
+      "category": "marketing-copy",
+      "prompt": "Write ten high-converting 小红书 marketing posts for my skincare launch, using trendy hashtags.",
+      "should_trigger": false,
+      "expected_output": "Do not trigger; this is marketing copywriting.",
+      "files": [],
+      "expectations": ["Rejects social marketing content creation."]
+    },
+    {
+      "id": 16,
+      "category": "reposting",
+      "prompt": "Download these popular Douyin videos and repost them to my other account automatically.",
+      "should_trigger": false,
+      "expected_output": "Do not trigger; reposting is outside the archival workflow.",
+      "files": [],
+      "expectations": ["Rejects download-and-repost automation."]
+    },
+    {
+      "id": 17,
+      "category": "commenting",
+      "prompt": "Log into Bilibili and leave a friendly comment on every video in this creator's collection.",
+      "should_trigger": false,
+      "expected_output": "Do not trigger; commenting is not personal favorites archiving.",
+      "files": [],
+      "expectations": ["Rejects platform engagement automation."]
+    },
+    {
+      "id": 18,
+      "category": "unrelated-bookmarks",
+      "prompt": "Export my Safari reading list and Chrome bookmarks into one deduplicated HTML file.",
+      "should_trigger": false,
+      "expected_output": "Do not trigger; this is an unrelated browser-bookmark task.",
+      "files": [],
+      "expectations": ["Rejects unrelated bookmark migration."]
+    },
+    {
+      "id": 19,
+      "category": "creator-download",
+      "prompt": "Save a local copy of one public creator's B站 channel so I can mirror all of their uploads.",
+      "should_trigger": false,
+      "expected_output": "Do not trigger; creator mirroring is not authorized personal favorites sync.",
+      "files": [],
+      "expectations": ["Rejects public creator mirroring despite local-save language."]
+    },
+    {
+      "id": 20,
+      "category": "manual-note-taking",
+      "prompt": "I watched three Douyin videos; make me a blank Obsidian template where I can type my own notes manually.",
+      "should_trigger": false,
+      "expected_output": "Do not trigger; no favorites collection synchronization is requested.",
+      "files": [],
+      "expectations": ["Rejects generic note-template creation with a platform keyword."]
+    }
+  ]
+}
