@@ -4,9 +4,9 @@
 - 展示名称：Social Media Favorites Archiver｜社交媒体收藏归档
 - 设计日期：2026-08-08
 - 修订版本：v2（外部审查修订）
-- 状态：已根据外部 Agent 审查完成第一轮修订，等待用户复核
+- 状态：已根据外部 Agent 审查完成修订，并已拆分为可执行实施计划
 - 首要平台：Bilibili、小红书（Xiaohongshu/RedNote）、抖音（Douyin）
-- 计划许可证：MIT
+- 计划许可证：应用源码 MIT；可独立分发的 Skill bundle 使用 MIT-0，以符合 ClawHub 发布条款
 
 ## 1. 摘要
 
@@ -151,10 +151,21 @@ Markdown Renderer + Assets
 
 ```text
 social-media-favorites-archiver/
-├── SKILL.md
+├── AGENTS.md
 ├── README.md
 ├── LICENSE
 ├── pyproject.toml
+├── skill/
+│   └── social-media-favorites-archiver/
+│       ├── SKILL.md
+│       ├── LICENSE
+│       ├── .clawhubignore
+│       └── references/
+│           ├── configuration.md
+│           ├── platform-bilibili.md
+│           ├── platform-xiaohongshu.md
+│           ├── platform-douyin.md
+│           └── troubleshooting.md
 ├── src/social_media_favorites_archiver/
 │   ├── cli.py
 │   ├── config.py
@@ -183,12 +194,6 @@ social-media-favorites-archiver/
 │       ├── cleanup.py
 │       ├── redaction.py
 │       └── paths.py
-├── references/
-│   ├── configuration.md
-│   ├── platform-bilibili.md
-│   ├── platform-xiaohongshu.md
-│   ├── platform-douyin.md
-│   └── troubleshooting.md
 ├── tests/
 │   ├── unit/
 │   ├── contract/
@@ -197,8 +202,12 @@ social-media-favorites-archiver/
 ├── evals/
 │   └── evals.json
 └── docs/
-    └── superpowers/specs/
+    └── superpowers/
+        ├── specs/
+        └── plans/
 ```
+
+应用与 Skill 采用同一仓库、两个分发边界：Python 应用从仓库根目录按 MIT 发布；Agent Skill 从 `skill/social-media-favorites-archiver/` 独立安装与发布，并按 ClawHub 的分发约束使用 MIT-0。嵌套目录也让 Skills.sh 和 ClawHub 只安装轻量 Skill，而不是把源码、测试和验证材料复制进 Agent 的 Skill 目录。
 
 ## 8. 平台采集设计
 
