@@ -1,0 +1,30 @@
+# Changelog
+
+All notable changes to this project are documented in this file. Release tags are immutable.
+
+## [1.0.0] - 2026-08-09
+
+### Added
+
+- Local-first two-stage sync for a user's own Bilibili, Xiaohongshu/RedNote, and Douyin favorites.
+- Durable SQLite jobs for media, ASR, OCR, timeline fusion, optional text-only enrichment, Markdown rendering, verification, and safe cleanup.
+- Native subtitle preservation, local ASR fallback, ordered gallery OCR, adaptive video-frame OCR, and spoken/burned-caption fusion.
+- Obsidian-safe `smfa_id` note relocation, user-region preservation, conflict detection, indexes, and collection-membership reconciliation.
+- Typer CLI commands for doctor, login, collection discovery, sync, status, retry, cleanup, and sanitized reports.
+- Nested `social-media-favorites-archiver` Agent Skill with Skills.sh and ClawHub distribution metadata.
+
+### Changed
+
+- Authenticated platform discovery uses a dedicated real Chrome/CDP session and separate platform tabs.
+- Limited or interrupted enumeration is explicitly non-reconciling and safe to resume.
+- Xiaohongshu page-default renditions accept decoded aspect-preserving media instead of requiring source-resolution equality.
+- Douyin root pagination restarts from a stable first cursor on every bounded run.
+
+### Security
+
+- No platform secret, Cookie value, authorization header, browser state, signed URL, raw private response, or live content is committed or emitted in reports.
+- Media processing remains local; optional cloud enrichment accepts text-only allowlisted fields and is disabled by default.
+- Cleanup requires cache containment, database ownership, hash verification, a complete derivative barrier, and final-note verification.
+- Captchas, device checks, access controls, rate limits, signatures, and anti-bot systems are never bypassed.
+
+[1.0.0]: https://github.com/dvlin-dev/social-media-favorites-archiver/releases/tag/v1.0.0

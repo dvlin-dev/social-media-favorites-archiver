@@ -554,13 +554,13 @@ The user explicitly narrowed live heavy processing on 2026-08-09 to one represen
 - Create: `CHANGELOG.md`
 - Create: `docs/verification/2026-08-08-release.md`
 
-- [ ] Document supported platforms/types, privacy boundary, local/cloud split, prerequisites, installation, Chrome/CDP login, config, first metadata sync, heavy queue drain, Obsidian output, scheduling, troubleshooting, upgrade, and uninstall/data-retention behavior.
-- [ ] Clearly state that platform changes can temporarily break private collection adapters and that the project does not bypass platform controls.
-- [ ] Document local components: browser/yt-dlp/FFmpeg/SQLite/ASR/OCR/assets. Document the only optional cloud component: text-only OpenAI-compatible enrichment.
-- [ ] Ensure examples never contain real paths, usernames, cookies, URLs, tokens, or private content.
-- [ ] Change the Skill's CLI install reference from its development target to the prospective immutable `v1.0.0` tag before creating the release commit; validate bundle structure locally without claiming the tag already exists.
-- [ ] Build wheel/sdist, inspect package contents, install the wheel in a fresh temporary environment, and run `smfa --help` plus `smfa doctor`.
-- [ ] Run the full test/lint/type/privacy suite and verify the worktree contains no live artifacts.
+- [x] Document supported platforms/types, privacy boundary, local/cloud split, prerequisites, installation, Chrome/CDP login, config, first metadata sync, heavy queue drain, Obsidian output, scheduling, troubleshooting, upgrade, and uninstall/data-retention behavior.
+- [x] Clearly state that platform changes can temporarily break private collection adapters and that the project does not bypass platform controls.
+- [x] Document local components: browser/yt-dlp/FFmpeg/SQLite/ASR/OCR/assets. Document the only optional cloud component: text-only OpenAI-compatible enrichment.
+- [x] Ensure examples never contain real paths, usernames, cookies, URLs, tokens, or private content.
+- [x] Change the Skill's CLI install reference from its development target to the prospective immutable `v1.0.0` tag before creating the release commit; validate bundle structure locally without claiming the tag already exists.
+- [x] Build wheel/sdist, inspect package contents, install the wheel in a fresh temporary environment, and run `smfa --help` plus `smfa doctor`.
+- [x] Run the full test/lint/type/privacy suite and verify the worktree contains no live artifacts.
 - [ ] Commit the exact release tree, create annotated tag `v1.0.0` on that commit, push commit and tag, and create a GitHub release with accurate support claims and checksums/artifacts as configured.
 - [ ] After the tag is public, rerun the Skill's real public CLI installation command. If a correction is required, issue a patch release rather than moving or rewriting `v1.0.0`.
 - [ ] Record the GitHub release URL, commit/tag, artifact checks, and gates in the release verification document.

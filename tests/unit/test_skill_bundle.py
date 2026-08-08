@@ -52,7 +52,11 @@ def test_skill_body_is_concise_safe_and_routes_to_valid_references() -> None:
     _, body = _skill()
 
     assert len(body.splitlines()) < 220
-    assert "uv tool install --force {baseDir}/../.." in body
+    assert (
+        "uv tool install "
+        "git+https://github.com/dvlin-dev/social-media-favorites-archiver.git@v1.0.0"
+        in body
+    )
     assert all(command in body for command in ("smfa doctor", "smfa login", "smfa sync"))
     assert "Skill bundle is MIT-0" in body
     assert "application source remains MIT" in body

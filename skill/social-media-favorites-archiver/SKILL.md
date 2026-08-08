@@ -35,15 +35,15 @@ Do not use it for a single video transcription, one-image OCR, ordinary summariz
 - Keep ASR, OCR, media processing, and Markdown generation local. Send only the documented text allowlist when the user explicitly enables optional enrichment.
 - Preview cleanup first. Delete only item-owned cached media after every derivative and final-note verification succeeds.
 
-## Install the development CLI
+## Install the CLI
 
-If `smfa` is not already available in this repository checkout, install the local package reproducibly:
+If `smfa` is not already available, install the immutable public release:
 
 ```bash
-uv tool install --force {baseDir}/../..
+uv tool install git+https://github.com/dvlin-dev/social-media-favorites-archiver.git@v1.0.0
 ```
 
-Run `smfa --help` after installation. The release workflow replaces this development target with the immutable public tag before publication.
+Run `smfa --help` after installation. Do not replace the tag with a moving branch.
 
 ## Workflow
 
