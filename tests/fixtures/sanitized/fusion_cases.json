@@ -1,0 +1,77 @@
+{
+  "cases": [
+    {
+      "name": "exact duplicate",
+      "inputs": [
+        {"id": "asr-exact", "start": 0.0, "end": 2.0, "text": "开始做饭", "source": "asr"},
+        {"id": "ocr-exact", "start": 0.2, "end": 1.8, "text": "开始做饭", "source": "burned_caption"}
+      ],
+      "expected_kinds": ["spoken"],
+      "expected_text": ["开始做饭"]
+    },
+    {
+      "name": "punctuation difference",
+      "inputs": [
+        {"id": "asr-punctuation", "start": 0.0, "end": 2.0, "text": "你好，世界！", "source": "asr"},
+        {"id": "ocr-punctuation", "start": 0.1, "end": 1.9, "text": "你好 世界", "source": "burned_caption"}
+      ],
+      "expected_kinds": ["spoken"],
+      "expected_text": ["你好，世界！"]
+    },
+    {
+      "name": "asr ocr character error",
+      "inputs": [
+        {"id": "asr-character", "start": 1.0, "end": 3.0, "text": "今天学习 Python", "source": "asr"},
+        {"id": "ocr-character", "start": 1.1, "end": 2.9, "text": "今天学刁 Python", "source": "burned_caption"}
+      ],
+      "expected_kinds": ["spoken"],
+      "expected_text": ["今天学习 Python"]
+    },
+    {
+      "name": "partial overlap",
+      "inputs": [
+        {"id": "asr-overlap", "start": 3.0, "end": 6.0, "text": "下一步加入清水", "source": "asr"},
+        {"id": "ocr-overlap", "start": 5.5, "end": 7.0, "text": "下一步加入清水", "source": "burned_caption"}
+      ],
+      "expected_kinds": ["spoken"],
+      "expected_text": ["下一步加入清水"]
+    },
+    {
+      "name": "persistent title",
+      "inputs": [
+        {"id": "ocr-title-1", "start": 0.0, "end": 0.0, "text": "教程：番茄炒蛋", "source": "visual_annotation"},
+        {"id": "ocr-title-2", "start": 1.5, "end": 1.5, "text": "教程：番茄炒蛋", "source": "visual_annotation"}
+      ],
+      "expected_kinds": ["visual"],
+      "expected_text": ["教程：番茄炒蛋"]
+    },
+    {
+      "name": "visual only label",
+      "inputs": [
+        {"id": "asr-label", "start": 0.0, "end": 2.0, "text": "先加入鸡蛋", "source": "asr"},
+        {"id": "ocr-label", "start": 0.5, "end": 0.5, "text": "鸡蛋 2 个", "source": "visual_annotation"}
+      ],
+      "expected_kinds": ["spoken", "visual"],
+      "expected_text": ["先加入鸡蛋", "鸡蛋 2 个"]
+    },
+    {
+      "name": "ambiguous conflict",
+      "inputs": [
+        {"id": "asr-conflict", "start": 0.0, "end": 2.0, "text": "加入白糖", "source": "asr"},
+        {"id": "ocr-conflict", "start": 0.1, "end": 1.9, "text": "加入食盐", "source": "burned_caption"}
+      ],
+      "expected_kinds": ["conflict"],
+      "expected_text": ["加入白糖"]
+    },
+    {
+      "name": "repeated burned caption",
+      "inputs": [
+        {"id": "ocr-repeat-1", "start": 10.0, "end": 10.0, "text": "小火慢炖", "source": "burned_caption"},
+        {"id": "ocr-repeat-2", "start": 11.0, "end": 11.0, "text": "小火慢炖", "source": "burned_caption"},
+        {"id": "ocr-repeat-3", "start": 12.0, "end": 12.0, "text": "小火慢炖", "source": "burned_caption"}
+      ],
+      "expected_kinds": ["visual"],
+      "expected_text": ["小火慢炖"]
+    }
+  ]
+}

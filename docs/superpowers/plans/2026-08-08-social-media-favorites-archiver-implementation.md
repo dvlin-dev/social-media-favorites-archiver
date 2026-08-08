@@ -43,7 +43,7 @@ Update the `Status` cell as work progresses. Exactly one task may be `in_progres
 | 8 | Bilibili adapter | completed |
 | 9 | Local ASR backends | completed |
 | 10 | OCR and adaptive keyframes | completed |
-| 11 | ASR × OCR timeline fusion | pending |
+| 11 | ASR × OCR timeline fusion | completed |
 | 12 | Two-stage sync, early-stop, and reconciliation | pending |
 | 13 | Xiaohongshu adapter | pending |
 | 14 | Douyin adapter | pending |
@@ -341,16 +341,16 @@ social-media-favorites-archiver/
 - Create: `tests/unit/test_fusion.py`
 - Create: `tests/fixtures/sanitized/fusion_cases.json`
 
-- [ ] Create failing table-driven tests for exact duplicates, punctuation differences, ASR/OCR character errors, partially overlapping time windows, persistent titles, visual-only labels, conflicting readings, and repeated captions.
-- [ ] Normalize punctuation, whitespace, simplified/traditional variants where configured, and common OCR confusions while retaining original strings.
-- [ ] Align segments by overlap/nearby time windows, then use deterministic similarity thresholds to merge spoken burned captions.
-- [ ] Preserve non-spoken visual information such as titles, ingredient quantities, labels, code, and annotations as separate visual segments.
-- [ ] Preserve ambiguous conflicts with both readings and provenance instead of silently choosing one.
-- [ ] Produce one clean chronological transcript plus an auditable segment map back to ASR and OCR inputs.
-- [ ] Add property/invariant tests: stable ordering, deterministic output, no unexplained text loss, and no duplicate merged segment IDs.
-- [ ] Run `uv run pytest tests/unit/test_fusion.py -q` and the processor regression suite.
-- [ ] Commit with `feat: fuse ASR and OCR timelines`.
-- [ ] Update the tracker and report results before continuing to Task 12.
+- [x] Create failing table-driven tests for exact duplicates, punctuation differences, ASR/OCR character errors, partially overlapping time windows, persistent titles, visual-only labels, conflicting readings, and repeated captions.
+- [x] Normalize punctuation, whitespace, simplified/traditional variants where configured, and common OCR confusions while retaining original strings.
+- [x] Align segments by overlap/nearby time windows, then use deterministic similarity thresholds to merge spoken burned captions.
+- [x] Preserve non-spoken visual information such as titles, ingredient quantities, labels, code, and annotations as separate visual segments.
+- [x] Preserve ambiguous conflicts with both readings and provenance instead of silently choosing one.
+- [x] Produce one clean chronological transcript plus an auditable segment map back to ASR and OCR inputs.
+- [x] Add property/invariant tests: stable ordering, deterministic output, no unexplained text loss, and no duplicate merged segment IDs.
+- [x] Run `uv run pytest tests/unit/test_fusion.py -q` and the processor regression suite.
+- [x] Commit with `feat: fuse ASR and OCR timelines`.
+- [x] Update the tracker and report results before continuing to Task 12.
 
 ## Task 12: Two-stage sync, early-stop, and reconciliation
 
