@@ -139,3 +139,27 @@ def test_nearby_unrelated_visual_text_is_not_silently_merged() -> None:
         "打开应用",
         "HTTP 404",
     }
+
+
+def test_punctuation_only_ocr_noise_does_not_abort_useful_fusion() -> None:
+    useful = TextSegment(
+        segment_id="spoken-useful",
+        start_time=0,
+        end_time=2,
+        text="保留有效文本",
+        source=TextSource.ASR,
+    )
+    noise = TextSegment(
+        segment_id="ocr-punctuation-noise",
+        start_time=1,
+        end_time=1,
+        text="...!",
+        source=TextSource.BURNED_CAPTION,
+    )
+
+    result = fuse_timelines((useful, noise))
+
+    assert result.transcript == "保留有效文本"
+    assert [entry.input_segment_ids for entry in result.segment_map] == [
+        ("spoken-useful",)
+    ]

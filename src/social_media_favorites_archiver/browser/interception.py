@@ -105,7 +105,10 @@ class ResponseInterceptor:
         content_type = response.headers.get("content-type", "")
         if "json" not in content_type.lower():
             return
-        payload = await response.json()
+        try:
+            payload = await response.json()
+        except Exception:
+            return
         if not isinstance(payload, dict):
             return
         self._captures.append(

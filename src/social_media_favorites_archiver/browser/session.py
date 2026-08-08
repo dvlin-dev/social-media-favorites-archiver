@@ -15,6 +15,9 @@ class BrowserSessionError(RuntimeError):
 
 
 class PageLike(Protocol):
+    @property
+    def url(self) -> str: ...
+
     async def goto(self, url: str, *, wait_until: str) -> Any: ...
 
     async def evaluate(self, expression: str, arg: object | None = None) -> Any: ...
@@ -93,22 +96,35 @@ class BrowserSession:
         self.profile_path = validate_dedicated_profile(profile_path)
         self.connector = connector or _PlaywrightConnector()
         self._connected = False
+        self._context: ContextLike | None = None
 
-    async def connect(self) -> PageLike:
+    async def connect(self, *, preferred_host: str | None = None) -> PageLike:
         self.profile_path.mkdir(parents=True, exist_ok=True, mode=0o700)
-        try:
-            browser = await self.connector.connect(self.cdp_url)
-        except BaseException:
-            await self.connector.stop()
-            raise
-        self._connected = True
-        if not browser.contexts:
-            await self.stop()
-            raise BrowserSessionError("CDP browser has no authenticated context")
-        context = browser.contexts[0]
-        return context.pages[0] if context.pages else await context.new_page()
+        if not self._connected:
+            try:
+                browser = await self.connector.connect(self.cdp_url)
+            except BaseException:
+                await self.connector.stop()
+                raise
+            self._connected = True
+            if not browser.contexts:
+                await self.stop()
+                raise BrowserSessionError("CDP browser has no authenticated context")
+            self._context = browser.contexts[0]
+        assert self._context is not None
+        if preferred_host is not None:
+            for page in self._context.pages:
+                if urlsplit(page.url).hostname == preferred_host:
+                    return page
+            return await self._context.new_page()
+        return (
+            self._context.pages[0]
+            if self._context.pages
+            else await self._context.new_page()
+        )
 
     async def stop(self) -> None:
         if self._connected:
             await self.connector.stop()
             self._connected = False
+            self._context = None

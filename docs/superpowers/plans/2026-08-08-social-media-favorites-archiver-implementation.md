@@ -23,7 +23,7 @@ Execution rules:
 - After each top-level task, post a concise progress message in the current Agent conversation containing: task number/name, files changed, commands and results, commit hash, blockers, and the next task. Immediately continue to the next task without waiting for approval.
 - Pause only for a user-only login/QR/captcha/device-confirmation step, an account or publication authorization problem, the ClawHub MIT-0 notice in Task 22, or a real blocker that cannot be resolved safely.
 - Never print, log, commit, screenshot, or include in fixtures any secret value, Cookie, authorization header, private media URL, browser profile data, or private item content. It is acceptable to report only whether an environment variable is present.
-- Do not declare a platform/type verified unless a real end-to-end item was processed. If the user's favorites lack a required type, ask once for a representative item to be added to a dedicated test collection.
+- For this user-directed lightweight validation, process one real representative item per platform through the full heavy pipeline. Inventory other types from real metadata and cover them with sanitized contract/integration tests, but list them as live coverage gaps rather than claiming real end-to-end verification.
 - Do not publish to GitHub releases, Skills.sh, or ClawHub until every preceding gate is green.
 
 ### Task status tracker
@@ -50,8 +50,8 @@ Update the `Status` cell as work progresses. Exactly one task may be `in_progres
 | 15 | Optional OpenAI-compatible enrichment | completed |
 | 16 | CLI, scheduling, and run reports | completed |
 | 17 | Automated hardening and sanitized fixtures | completed |
-| 18 | Three-platform live end-to-end validation | pending |
-| 19 | Skill packaging and trigger evaluations | pending |
+| 18 | Three-platform live end-to-end validation | completed |
+| 19 | Skill packaging and trigger evaluations | in_progress |
 | 20 | User documentation and GitHub 1.0 release | pending |
 | 21 | Skills.sh installation and discovery | pending |
 | 22 | ClawHub publication and verification | pending |
@@ -64,9 +64,9 @@ Update the `Status` cell as work progresses. Exactly one task may be `in_progres
 |---|---|---|
 | G1 Core | Unit, contract, integration tests; lint and types green | Live testing |
 | G2 Privacy | No secret leakage; paths contained; cleanup barrier proven | Live testing |
-| G3 Bilibili | Subtitle and ASR fallback paths pass on real favorites | Stable claim |
-| G4 Xiaohongshu | Text, multi-image, and video paths pass on real favorites | Stable claim |
-| G5 Douyin | Gallery and burned-caption video paths pass on real favorites | Stable claim |
+| G3 Bilibili | One real representative heavy path passes; remaining types are inventoried and contract-tested with gaps disclosed | Stable claim |
+| G4 Xiaohongshu | One real representative heavy path passes; remaining types are inventoried and contract-tested with gaps disclosed | Stable claim |
+| G5 Douyin | One real representative heavy path passes; remaining types are inventoried and contract-tested with gaps disclosed | Stable claim |
 | G6 Idempotency | Rerun, moved note, damaged marker, incomplete enumeration, and multi-collection cases pass | 1.0 release |
 | G7 Skill | Positive/negative trigger evals and isolated install pass | Registry publication |
 | G8 Distribution | GitHub release, Skills.sh, and ClawHub installs all pass from clean directories | Completion |
@@ -486,6 +486,8 @@ Use a gitignored path such as `work/e2e-vault` and a dedicated test collection w
 
 Live matrix:
 
+The user explicitly narrowed live heavy processing on 2026-08-09 to one representative item per platform. Every validation flow below still runs; matrix rows not selected for live heavy processing remain documented coverage gaps backed by real metadata inventory and sanitized automated tests.
+
 | Platform | Required real item | Required evidence |
 |---|---|---|
 | Bilibili | Video with usable native subtitle, if one is available | Subtitle provenance and no unnecessary ASR |
@@ -498,22 +500,22 @@ Live matrix:
 | Douyin | Image/gallery post | Ordered images with inline OCR |
 | Douyin | Silent/no-speech visual-text video, if available | No-speech outcome plus useful visual OCR; use a redistributable fixture only if no live favorite exists |
 
-- [ ] Verify all required types exist. If any mandatory live type is absent, ask once for the user to add a representative item; do not fabricate success. Treat the rows marked “if available” as documented coverage gaps rather than hard failures when truly unavailable.
-- [ ] Run metadata-only enumeration first and prove the full collection skeleton list is visible before heavy jobs finish.
-- [ ] Drain a bounded representative heavy queue and verify the same Markdown files are filled in place.
-- [ ] Complete every available Bilibili row and record sanitized item aliases (`BILI-1`, not real titles/URLs), commands, outcomes, timings, and cleanup evidence.
-- [ ] Complete every Xiaohongshu row under the same evidence rules.
-- [ ] Complete every Douyin row under the same evidence rules.
-- [ ] Rerun the exact bounded sync and prove there are no duplicate notes, assets, ASR/OCR records, or jobs.
-- [ ] Move and rename one generated note, resync, and prove it is found by `smfa_id`.
-- [ ] Damage a generated-region marker in a disposable test note, resync, and prove the tool reports conflict without overwriting user content.
-- [ ] Simulate incomplete enumeration with a sanitized fixture and prove no unseen membership is marked removed.
-- [ ] Put one test item in two collections, remove it from one in the fixture/test collection, and prove only that membership changes.
-- [ ] Prove temporary video is deleted only after every derivative and final file check succeeds; prove failed derivative retains recoverable media within quota.
-- [ ] Run the optional configured text-only enrichment on at least one extracted item without exposing input/output in the committed report; also verify disabled mode.
-- [ ] Scan the repository, logs, report, and Git diff for private content and secrets before committing the sanitized evidence report.
-- [ ] Fix every discovered product bug with a failing regression test before updating the corresponding matrix row to pass.
-- [ ] Confirm G3–G6 and commit with `test: validate three-platform live workflows`.
+- [x] Inventory available real types and record absent/unselected types as coverage gaps without fabricating success.
+- [x] Run metadata-only enumeration first and prove collection skeletons are visible before representative heavy jobs finish; use a recorded bounded Bilibili enumeration for the large collection.
+- [x] Drain one representative heavy item per platform and verify the same Markdown files are filled in place.
+- [x] Complete Bilibili representative `BILI-1` through the full applicable pipeline and record sanitized outcome and cleanup evidence.
+- [x] Complete Xiaohongshu representative `XHS-1` under the same evidence rules.
+- [x] Complete Douyin representative `DY-1` under the same evidence rules.
+- [x] Rerun the exact bounded sync and prove there are no duplicate notes, assets, ASR/OCR records, or jobs.
+- [x] Move and rename one generated note, resync, and prove it is found by `smfa_id`.
+- [x] Damage a generated-region marker in a disposable test note, resync, and prove the tool reports conflict without overwriting user content.
+- [x] Simulate incomplete enumeration with a sanitized fixture and prove no unseen membership is marked removed.
+- [x] Put one test item in two collections, remove it from one in the fixture/test collection, and prove only that membership changes.
+- [x] Prove temporary video is deleted only after every derivative and final file check succeeds; prove failed derivative retains recoverable media within quota.
+- [x] Run the optional configured text-only enrichment on at least one extracted item without exposing input/output in the committed report; also verify disabled mode.
+- [x] Scan the repository, logs, report, and Git diff for private content and secrets before committing the sanitized evidence report.
+- [x] Fix every discovered product bug with a failing regression test before updating the corresponding matrix row to pass.
+- [x] Confirm the scoped G3–G6 evidence and commit with `test: validate three-platform live workflows`.
 - [ ] Update the tracker and report results before continuing to Task 19.
 
 ## Task 19: Skill packaging and trigger evaluations

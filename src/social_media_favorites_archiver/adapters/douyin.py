@@ -125,21 +125,77 @@ class DouyinBrowserBridge:
     _OPEN_FAVORITES_SCRIPT = """
     async () => {
       const sleep = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
-      const leaf = [...document.querySelectorAll('a,button,div,span')].find((node) =>
-        node.children.length === 0 && node.textContent.trim() === '收藏'
+      const findTarget = () => {
+        const leaf = [...document.querySelectorAll('a,button,div,span')].find((node) =>
+          node.children.length === 0 && node.textContent.trim() === '收藏'
+        );
+        return leaf ? (leaf.closest('[role="tab"],button,a') || leaf) : null;
+      };
+      for (let attempt = 0; attempt < 100; attempt += 1) {
+        const target = findTarget();
+        if (!target) {
+          await sleep(100);
+          continue;
+        }
+        const active = target.getAttribute('aria-selected') === 'true'
+          || target.getAttribute('tabindex') === '0';
+        if (active) return true;
+        if (attempt % 5 === 0) target.click();
+        await sleep(100);
+      }
+      const target = findTarget();
+      return Boolean(target) && (
+        target.getAttribute('aria-selected') === 'true'
+        || target.getAttribute('tabindex') === '0'
       );
-      if (!leaf) return false;
-      leaf.click();
-      await sleep(250);
-      window.scrollTo({top: document.documentElement.scrollHeight, behavior: 'instant'});
-      await sleep(500);
+    }
+    """
+    _LOAD_MORE_SCRIPT = """
+    async () => {
+      const sleep = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
+      const candidates = [...document.querySelectorAll('*')].filter((node) => {
+        const style = getComputedStyle(node);
+        return ['auto', 'scroll'].includes(style.overflowY)
+          && node.scrollHeight > node.clientHeight + 100;
+      }).sort((left, right) =>
+        (right.scrollHeight - right.clientHeight) - (left.scrollHeight - left.clientHeight)
+      );
+      const scroller = candidates[0];
+      if (!scroller) return false;
+      const step = Math.max(400, Math.floor(scroller.clientHeight * 0.75));
+      for (let attempt = 0; attempt < 6; attempt += 1) {
+        scroller.scrollTo({
+          top: Math.min(scroller.scrollHeight, scroller.scrollTop + step),
+          behavior: 'smooth',
+        });
+        await sleep(500);
+      }
       return true;
     }
     """
 
-    def __init__(self, client: PageContextClient) -> None:
+    def __init__(
+        self,
+        client: PageContextClient,
+        *,
+        session_poll_attempts: int = 25,
+        session_poll_interval: float = 0.2,
+        response_wait_seconds: float = 3.0,
+    ) -> None:
+        if session_poll_attempts < 1:
+            raise ValueError("Douyin session poll attempts must be positive")
+        if session_poll_interval < 0:
+            raise ValueError("Douyin session poll interval must not be negative")
+        if response_wait_seconds < 0:
+            raise ValueError("Douyin response wait must not be negative")
         self.client = client
-        self.favorite_responses = ResponseInterceptor(url_substring="favorite")
+        self.session_poll_attempts = session_poll_attempts
+        self.session_poll_interval = session_poll_interval
+        self.response_wait_seconds = response_wait_seconds
+        self._next_favorite_cursor: str | None = None
+        self.favorite_responses = ResponseInterceptor(
+            url_substring="/aweme/v1/web/aweme/"
+        )
         self.detail_responses = ResponseInterceptor(url_substring="aweme/detail")
         self.favorite_responses.attach(client.page)
         self.detail_responses.attach(client.page)
@@ -148,8 +204,14 @@ class DouyinBrowserBridge:
     async def check_session(self) -> SessionStatus:
         try:
             await self.client.navigate(_PROFILE_URL)
-            result = await self.client.page.evaluate(self._SESSION_SCRIPT, None)
-            payload = _mapping(result, message="Douyin session state changed")
+            payload: dict[str, Any] = {}
+            for attempt in range(self.session_poll_attempts):
+                result = await self.client.page.evaluate(self._SESSION_SCRIPT, None)
+                payload = _mapping(result, message="Douyin session state changed")
+                if payload.get("authenticated"):
+                    break
+                if attempt + 1 < self.session_poll_attempts:
+                    await asyncio.sleep(self.session_poll_interval)
         except AdapterError:
             raise
         except Exception:
@@ -192,16 +254,25 @@ class DouyinBrowserBridge:
     ) -> dict[str, object]:
         if collection_id not in {"favorites", "image-favorites"}:
             raise ValueError("unknown Douyin collection")
-        await self.client.navigate(_PROFILE_URL)
         self.favorite_responses.pop_all()
-        opened = await self.client.page.evaluate(self._OPEN_FAVORITES_SCRIPT, None)
+        if cursor is None:
+            await self.client.navigate(_PROFILE_URL)
+            opened = await self.client.page.evaluate(self._OPEN_FAVORITES_SCRIPT, None)
+        else:
+            if cursor != self._next_favorite_cursor:
+                raise AdapterError(
+                    AdapterErrorCode.ENUMERATION_INCOMPLETE,
+                    "Douyin favorite cursor no longer matches the active page",
+                    retryable=True,
+                )
+            opened = await self.client.page.evaluate(self._LOAD_MORE_SCRIPT, None)
         if opened is not True:
             raise AdapterError(
                 AdapterErrorCode.LAYOUT_CHANGED,
                 "Douyin favorites tab could not be located",
                 retryable=False,
             )
-        await asyncio.sleep(0.75)
+        await asyncio.sleep(self.response_wait_seconds)
         page_payload: dict[str, Any] | None = None
         for capture in self.favorite_responses.pop_all():
             candidate = _find_page(capture.payload)
@@ -247,6 +318,7 @@ class DouyinBrowserBridge:
                 "Douyin repeated the favorite cursor",
                 retryable=True,
             )
+        self._next_favorite_cursor = next_cursor
         return {
             "items": public_entries,
             "next_cursor": next_cursor,

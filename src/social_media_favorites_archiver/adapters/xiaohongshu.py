@@ -126,12 +126,21 @@ class XiaohongshuBrowserBridge:
         }
         if (current.items.length === previousLength) break;
       }
-      const selected = current.items.slice(offset, offset + pageSize).map((entry) => ({
-        id: entry?.noteCard?.noteId || entry?.id,
-        type: entry?.noteCard?.type || 'normal',
-        revision: null,
-        access_token: entry?.noteCard?.xsecToken || entry?.xsecToken || null,
-      })).filter((entry) => Boolean(entry.id));
+      const selected = current.items.slice(offset, offset + pageSize).map((entry) => {
+        const card = entry?.noteCard || entry || {};
+        return {
+          id: card?.noteId || entry?.id,
+          type: card?.type || 'normal',
+          revision: null,
+          access_token: card?.xsecToken || entry?.xsecToken || null,
+          card: {
+            title: card?.displayTitle || card?.title || '',
+            desc: card?.desc || '',
+            type: card?.type || 'normal',
+            user: {nickname: card?.user?.nickname || ''},
+          },
+        };
+      }).filter((entry) => Boolean(entry.id));
       const nextOffset = offset + selected.length;
       const hasMore = Boolean(current.query.hasMore) || nextOffset < current.items.length;
       return {
@@ -156,13 +165,27 @@ class XiaohongshuBrowserBridge:
     }
     """
 
-    def __init__(self, client: PageContextClient, *, page_size: int = 20) -> None:
+    def __init__(
+        self,
+        client: PageContextClient,
+        *,
+        page_size: int = 20,
+        session_poll_attempts: int = 25,
+        session_poll_interval: float = 0.2,
+    ) -> None:
         if page_size < 1:
             raise ValueError("Xiaohongshu page size must be positive")
+        if session_poll_attempts < 1:
+            raise ValueError("Xiaohongshu session poll attempts must be positive")
+        if session_poll_interval < 0:
+            raise ValueError("Xiaohongshu session poll interval must not be negative")
         self.client = client
         self.page_size = page_size
+        self.session_poll_attempts = session_poll_attempts
+        self.session_poll_interval = session_poll_interval
         self.profile_path: str | None = None
         self.access_tokens: dict[str, str] = {}
+        self.card_cache: dict[str, dict[str, object]] = {}
         self.favorite_responses = ResponseInterceptor(
             url_substring="/api/sns/web/v1/user_posted"
         )
@@ -173,8 +196,16 @@ class XiaohongshuBrowserBridge:
     async def check_session(self) -> SessionStatus:
         try:
             await self.client.navigate(_HOME_URL)
-            result = await self.client.page.evaluate(self._SESSION_SCRIPT, None)
-            payload = _mapping(result, message="Xiaohongshu session state changed")
+            payload: dict[str, Any] = {}
+            for attempt in range(self.session_poll_attempts):
+                result = await self.client.page.evaluate(self._SESSION_SCRIPT, None)
+                payload = _mapping(result, message="Xiaohongshu session state changed")
+                if payload.get("authenticated") and isinstance(
+                    payload.get("profile_path"), str
+                ):
+                    break
+                if attempt + 1 < self.session_poll_attempts:
+                    await asyncio.sleep(self.session_poll_interval)
         except AdapterError:
             raise
         except Exception:
@@ -256,8 +287,11 @@ class XiaohongshuBrowserBridge:
             entry = _mapping(raw_item, message="Xiaohongshu favorite entry changed")
             item_id = str(entry.get("id") or "")
             token = entry.pop("access_token", None)
+            card = entry.pop("card", None)
             if item_id and isinstance(token, str) and token:
                 self.access_tokens[item_id] = token
+            if item_id and isinstance(card, dict):
+                self.card_cache[item_id] = cast(dict[str, object], card)
             public_items.append(entry)
         payload["items"] = public_items
         return payload
@@ -265,15 +299,26 @@ class XiaohongshuBrowserBridge:
     async def item_detail(self, item_id: str) -> dict[str, object]:
         token = self.access_tokens.get(item_id)
         if token is None:
-            raise AdapterError(
-                AdapterErrorCode.MEDIA_UNAVAILABLE,
-                "Xiaohongshu item access data is no longer available; enumerate again",
-                retryable=True,
-            )
+            return self._unavailable_card_detail(item_id)
         query = urlencode({"xsec_token": token, "xsec_source": "pc_user"})
         await self.client.navigate(f"https://www.xiaohongshu.com/explore/{item_id}?{query}")
         result = await self.client.page.evaluate(self._DETAIL_SCRIPT, {"itemId": item_id})
+        if result is None:
+            return self._unavailable_card_detail(item_id)
         return _mapping(result, message="Xiaohongshu detail layout changed")
+
+    def _unavailable_card_detail(self, item_id: str) -> dict[str, object]:
+        card = self.card_cache.get(item_id, {})
+        user = card.get("user")
+        return {
+            "noteId": item_id,
+            "title": str(card.get("title") or "Unavailable Xiaohongshu item"),
+            "desc": str(card.get("desc") or "") or None,
+            "type": str(card.get("type") or "normal"),
+            "user": user if isinstance(user, dict) else {},
+            "availability": "unavailable",
+            "imageList": [],
+        }
 
 
 def _fingerprint(value: object) -> str:
@@ -330,7 +375,7 @@ def _http_url(value: object) -> str | None:
 def _image_url(image: dict[str, Any]) -> tuple[str | None, str]:
     default = _http_url(image.get("urlDefault"))
     if default is not None:
-        return default, "original"
+        return default, "page-default"
     direct = _http_url(image.get("url"))
     if direct is not None:
         return direct, "fallback"
@@ -344,6 +389,26 @@ def _image_url(image: dict[str, Any]) -> tuple[str | None, str]:
     return _http_url(image.get("urlPre")), "fallback"
 
 
+def _dimensions_match(
+    actual: tuple[int, int],
+    expected: tuple[int, int],
+    *,
+    quality: str,
+) -> bool:
+    """Accept page renditions when their aspect ratio preserves source geometry."""
+    del quality
+    if actual == expected:
+        return True
+    actual_width, actual_height = actual
+    expected_width, expected_height = expected
+    if min(actual_width, actual_height, expected_width, expected_height) < 1:
+        return False
+    aspect_error = abs(
+        (actual_width / actual_height) / (expected_width / expected_height) - 1
+    )
+    return aspect_error <= 0.02
+
+
 def _video_url(detail: dict[str, Any]) -> str | None:
     video = detail.get("video") or detail.get("videoInfo")
     if not isinstance(video, dict):
@@ -352,16 +417,29 @@ def _video_url(detail: dict[str, Any]) -> str | None:
     if isinstance(media, dict):
         stream = media.get("stream")
         if isinstance(stream, dict):
-            for codec in ("h264", "h265", "av1"):
-                variants = stream.get(codec)
+            candidates: list[dict[str, Any]] = []
+            for variants in stream.values():
                 if isinstance(variants, list):
                     for variant in variants:
                         if isinstance(variant, dict):
-                            candidate = _http_url(
-                                variant.get("masterUrl") or variant.get("backupUrls")
-                            )
-                            if candidate is not None:
-                                return candidate
+                            candidates.append(variant)
+            candidates.sort(
+                key=lambda variant: (
+                    int(variant.get("defaultStream") == 1),
+                    variant.get("weight") if isinstance(variant.get("weight"), int) else 0,
+                ),
+                reverse=True,
+            )
+            for variant in candidates:
+                candidate = _http_url(variant.get("masterUrl"))
+                if candidate is not None:
+                    return candidate
+                backups = variant.get("backupUrls")
+                if isinstance(backups, list):
+                    for backup in backups:
+                        candidate = _http_url(backup)
+                        if candidate is not None:
+                            return candidate
     return _http_url(video.get("masterUrl") or video.get("url"))
 
 
@@ -649,7 +727,11 @@ class XiaohongshuAdapter(BaseAdapter):
                     ) from error
                 expected = dimensions.get(asset.asset_id)
                 expected_tuple = tuple(expected) if isinstance(expected, (list, tuple)) else None
-                if expected_tuple is not None and actual_dimensions != expected_tuple:
+                if expected_tuple is not None and not _dimensions_match(
+                    actual_dimensions,
+                    expected_tuple,
+                    quality=asset.quality or "fallback",
+                ):
                     stored.path.unlink(missing_ok=True)
                     raise AdapterError(
                         AdapterErrorCode.MEDIA_UNAVAILABLE,

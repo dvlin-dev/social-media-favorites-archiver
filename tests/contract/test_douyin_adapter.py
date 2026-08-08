@@ -16,6 +16,7 @@ from social_media_favorites_archiver.adapters.base import (
     SessionStatus,
 )
 from social_media_favorites_archiver.adapters.douyin import DouyinAdapter, DouyinBrowserBridge
+from social_media_favorites_archiver.browser.interception import PageContextClient
 from social_media_favorites_archiver.models import ContentType, Platform, SourceAvailability
 
 FIXTURE_PATH = Path(__file__).parents[1] / "fixtures" / "sanitized" / "douyin.json"
@@ -52,6 +53,73 @@ class FixtureBridge:
         details = self.fixture["details"]
         assert isinstance(details, dict)
         return details[item_id]
+
+
+class DelayedSessionPage:
+    def __init__(self) -> None:
+        self.evaluations = 0
+        self.handlers: dict[str, object] = {}
+
+    async def goto(self, url: str, *, wait_until: str) -> None:
+        self.url = url
+        self.wait_until = wait_until
+
+    async def evaluate(self, expression: str, arg: object | None = None) -> object:
+        del expression, arg
+        self.evaluations += 1
+        return {"authenticated": self.evaluations > 1}
+
+    def on(self, event: str, handler: object) -> None:
+        self.handlers[event] = handler
+
+
+class FakeFavoriteResponse:
+    def __init__(self, payload: dict[str, object]) -> None:
+        self.url = "https://www.douyin.com/aweme/v1/web/aweme/favorite/"
+        self.status = 200
+        self.headers = {"content-type": "application/json"}
+        self.payload = payload
+
+    async def json(self) -> dict[str, object]:
+        return self.payload
+
+
+class PaginatedFavoritePage:
+    def __init__(self) -> None:
+        self.handlers: dict[str, list[object]] = {}
+        self.navigations = 0
+        self.response_index = 0
+        self.responses = [
+            {
+                "aweme_list": [{"aweme_id": "fixture-1", "video": {}}],
+                "has_more": 1,
+                "max_cursor": 10,
+            },
+            {
+                "aweme_list": [{"aweme_id": "fixture-2", "video": {}}],
+                "has_more": 0,
+                "max_cursor": 20,
+            },
+        ]
+
+    async def goto(self, url: str, *, wait_until: str) -> None:
+        del wait_until
+        self.url = url
+        self.navigations += 1
+        self.response_index = 0
+
+    async def evaluate(self, expression: str, arg: object | None = None) -> object:
+        del expression, arg
+        response = FakeFavoriteResponse(self.responses[self.response_index])
+        self.response_index += 1
+        for handler in self.handlers["response"]:
+            result = handler(response)
+            if asyncio.iscoroutine(result):
+                await result
+        return True
+
+    def on(self, event: str, handler: object) -> None:
+        self.handlers.setdefault(event, []).append(handler)
 
 
 def _fixture() -> dict[str, object]:
@@ -149,6 +217,66 @@ def test_browser_bridge_intercepts_page_responses_without_python_token_math() ->
     assert "PageContextClient" in source
     assert "ResponseInterceptor" in source
     assert "bogus" not in source.lower()
+
+
+def test_browser_bridge_waits_for_hydrated_session_state() -> None:
+    async def exercise() -> None:
+        page = DelayedSessionPage()
+        bridge = DouyinBrowserBridge(
+            PageContextClient(page),
+            session_poll_attempts=2,
+            session_poll_interval=0,
+        )
+
+        status = await bridge.check_session()
+
+        assert status.authenticated
+        assert page.evaluations == 2
+
+    asyncio.run(exercise())
+
+
+def test_browser_bridge_scrolls_existing_favorite_page_for_next_cursor() -> None:
+    async def exercise() -> None:
+        page = PaginatedFavoritePage()
+        bridge = DouyinBrowserBridge(
+            PageContextClient(page),
+            response_wait_seconds=0,
+        )
+
+        first = await bridge.favorite_page("favorites", None)
+        second = await bridge.favorite_page("favorites", "10")
+
+        assert first["next_cursor"] == "10"
+        assert second["complete"] is True
+        assert page.navigations == 1
+
+    asyncio.run(exercise())
+
+
+def test_browser_bridge_restarts_root_cursor_from_first_favorite_page() -> None:
+    async def exercise() -> None:
+        page = PaginatedFavoritePage()
+        bridge = DouyinBrowserBridge(
+            PageContextClient(page),
+            response_wait_seconds=0,
+        )
+
+        first = await bridge.favorite_page("favorites", None)
+        repeated = await bridge.favorite_page("favorites", None)
+
+        assert first["items"] == repeated["items"]
+        assert first["next_cursor"] == repeated["next_cursor"] == "10"
+        assert page.navigations == 2
+
+    asyncio.run(exercise())
+
+
+def test_favorites_tab_script_reacquires_react_nodes_while_clicking() -> None:
+    script = DouyinBrowserBridge._OPEN_FAVORITES_SCRIPT
+
+    assert "const findTarget" in script
+    assert script.count("findTarget()") >= 2
 
 
 def test_diagnostic_does_not_include_raw_error_text() -> None:

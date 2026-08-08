@@ -27,6 +27,7 @@ from social_media_favorites_archiver.models import (
     AssetKind,
     NormalizedItem,
     Platform,
+    SourceAvailability,
     TextSegment,
     TextSource,
 )
@@ -240,6 +241,10 @@ class LocalHeavyWorker:
 
     @staticmethod
     def _assets_ready(item: NormalizedItem) -> bool:
+        if item.source_availability == SourceAvailability.UNAVAILABLE:
+            return True
+        if item.platform.value == "bilibili" and item.native_subtitles:
+            return True
         local = [
             asset
             for asset in item.assets

@@ -18,7 +18,11 @@ from social_media_favorites_archiver.adapters.base import (
 from social_media_favorites_archiver.adapters.xiaohongshu import (
     XiaohongshuAdapter,
     XiaohongshuBrowserBridge,
+    _dimensions_match,
+    _image_url,
+    _video_url,
 )
+from social_media_favorites_archiver.browser.interception import PageContextClient
 from social_media_favorites_archiver.models import ContentType, Platform, SourceAvailability
 
 FIXTURE_PATH = Path(__file__).parents[1] / "fixtures" / "sanitized" / "xiaohongshu.json"
@@ -55,6 +59,26 @@ class FixtureBridge:
         details = self.fixture["details"]
         assert isinstance(details, dict)
         return details[item_id]
+
+
+class DelayedSessionPage:
+    def __init__(self) -> None:
+        self.evaluations = 0
+        self.handlers: dict[str, object] = {}
+
+    async def goto(self, url: str, *, wait_until: str) -> None:
+        self.url = url
+        self.wait_until = wait_until
+
+    async def evaluate(self, expression: str, arg: object | None = None) -> object:
+        del expression, arg
+        self.evaluations += 1
+        if self.evaluations == 1:
+            return {"authenticated": False, "profile_path": None}
+        return {"authenticated": True, "profile_path": "/user/profile/fixture-user"}
+
+    def on(self, event: str, handler: object) -> None:
+        self.handlers[event] = handler
 
 
 def _fixture() -> dict[str, object]:
@@ -142,6 +166,79 @@ def test_browser_bridge_uses_page_context_without_python_signature_generation() 
     assert "PageContextClient" in source
     assert "ResponseInterceptor" in source
     assert "sign" not in source.lower()
+
+
+def test_browser_bridge_waits_for_hydrated_session_state() -> None:
+    async def exercise() -> None:
+        page = DelayedSessionPage()
+        bridge = XiaohongshuBrowserBridge(
+            PageContextClient(page),
+            session_poll_attempts=2,
+            session_poll_interval=0,
+        )
+
+        status = await bridge.check_session()
+
+        assert status.authenticated
+        assert page.evaluations == 2
+
+    asyncio.run(exercise())
+
+
+def test_browser_bridge_preserves_card_metadata_when_detail_access_is_missing() -> None:
+    async def exercise() -> None:
+        bridge = XiaohongshuBrowserBridge(PageContextClient(DelayedSessionPage()))
+        bridge.card_cache["fixture-unavailable"] = {
+            "title": "Unavailable fixture note",
+            "desc": "Fixture card text",
+            "type": "normal",
+            "user": {"nickname": "Fixture author"},
+        }
+
+        detail = await bridge.item_detail("fixture-unavailable")
+
+        assert detail["noteId"] == "fixture-unavailable"
+        assert detail["title"] == "Unavailable fixture note"
+        assert detail["availability"] == "unavailable"
+        assert detail["imageList"] == []
+
+    asyncio.run(exercise())
+
+
+def test_video_url_accepts_live_dynamic_stream_family_keys() -> None:
+    detail = {
+        "video": {
+            "media": {
+                "stream": {
+                    "EF4": [
+                        {
+                            "defaultStream": 1,
+                            "weight": 100,
+                            "masterUrl": "https://example.invalid/video.mp4",
+                        }
+                    ]
+                }
+            }
+        }
+    }
+
+    assert _video_url(detail) == "https://example.invalid/video.mp4"
+
+
+def test_page_default_image_is_a_valid_aspect_preserving_rendition() -> None:
+    url, quality = _image_url(
+        {
+            "urlDefault": "https://example.invalid/page-default.webp",
+            "width": 4493,
+            "height": 3370,
+        }
+    )
+
+    assert url == "https://example.invalid/page-default.webp"
+    assert quality == "page-default"
+    assert _dimensions_match((1440, 1080), (4493, 3370), quality=quality)
+    assert _dimensions_match((1440, 1080), (4493, 3370), quality="original")
+    assert not _dimensions_match((1080, 1440), (4493, 3370), quality=quality)
 
 
 def test_adapter_diagnostic_never_includes_raw_exception_text() -> None:

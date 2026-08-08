@@ -42,12 +42,12 @@ class FakePage:
 
 
 class FakeContext:
-    def __init__(self, page: FakePage) -> None:
-        self.pages = [page]
+    def __init__(self, page: FakePage | list[FakePage]) -> None:
+        self.pages = page if isinstance(page, list) else [page]
 
 
 class FakeBrowser:
-    def __init__(self, page: FakePage) -> None:
+    def __init__(self, page: FakePage | list[FakePage]) -> None:
         self.contexts = [FakeContext(page)]
 
 
@@ -74,6 +74,11 @@ class FakeResponse:
         return {"items": [{"id": "fixture-1", "caption": "private in-memory text"}]}
 
 
+class BrokenBodyResponse(FakeResponse):
+    async def json(self):
+        raise RuntimeError("response body disappeared during navigation")
+
+
 def test_browser_session_connects_only_to_explicit_cdp_and_leaves_browser_running(
     tmp_path: Path,
 ) -> None:
@@ -91,6 +96,30 @@ def test_browser_session_connects_only_to_explicit_cdp_and_leaves_browser_runnin
     assert connected_page is page
     assert connector.endpoint == "http://127.0.0.1:9222"
     assert connector.stopped is True
+
+
+def test_browser_session_selects_existing_page_for_preferred_host(tmp_path: Path) -> None:
+    bilibili = FakePage()
+    bilibili.url = "https://www.bilibili.com/"
+    douyin = FakePage()
+    douyin.url = "https://www.douyin.com/user/self"
+
+    class MultiPageConnector(FakeConnector):
+        async def connect(self, endpoint: str):
+            self.endpoint = endpoint
+            return FakeBrowser([bilibili, douyin])
+
+    connector = MultiPageConnector(bilibili)
+    session = BrowserSession(
+        cdp_url="http://127.0.0.1:9222",
+        profile_path=tmp_path / "dedicated-profile",
+        connector=connector,
+    )
+
+    connected_page = asyncio.run(session.connect(preferred_host="www.douyin.com"))
+    asyncio.run(session.stop())
+
+    assert connected_page is douyin
 
 
 def test_default_browser_profiles_are_rejected() -> None:
@@ -131,5 +160,19 @@ def test_response_interception_keeps_payload_in_memory_and_sanitizes_diagnostics
         summary = interceptor.diagnostic_summary()
         assert "fake-private-signature" not in summary
         assert "private in-memory text" not in summary
+
+    asyncio.run(exercise())
+
+
+def test_response_interception_ignores_body_lost_during_navigation() -> None:
+    async def exercise() -> None:
+        page = FakePage()
+        interceptor = ResponseInterceptor(url_substring="/api/favorites")
+        interceptor.attach(page)
+
+        await page.emit_response(BrokenBodyResponse())
+
+        assert interceptor.pop_all() == ()
+        assert "matched_responses" in interceptor.diagnostic_summary()
 
     asyncio.run(exercise())

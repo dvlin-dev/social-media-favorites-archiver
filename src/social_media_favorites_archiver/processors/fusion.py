@@ -283,8 +283,11 @@ def fuse_timelines(
     input_ids = [segment.segment_id for segment in segments]
     if len(input_ids) != len(set(input_ids)):
         raise ValueError("fusion input segment IDs must be unique")
-    if any(not normalize_text(segment.text, config=settings) for segment in segments):
-        raise ValueError("fusion input text must contain comparable characters")
+    segments = tuple(
+        segment
+        for segment in segments
+        if normalize_text(segment.text, config=settings)
+    )
 
     spoken_segments = tuple(
         segment for segment in segments if segment.source in _SPOKEN_SOURCES

@@ -5,12 +5,16 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import json
+import random
+import time
 from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
+from threading import Lock
 from typing import Any, Protocol, cast
 
 from yt_dlp import YoutubeDL  # type: ignore[import-untyped]
+from yt_dlp.utils import DownloadError  # type: ignore[import-untyped]
 
 from social_media_favorites_archiver.adapters.base import (
     AdapterDiagnostic,
@@ -86,10 +90,24 @@ class YtDlpBridge:
         browser_profile: str | Path,
         browser_name: str = "chrome",
         logger: YtDlpLogSink | None = None,
+        sleep: Callable[[float], None] = time.sleep,
+        jitter: Callable[[float, float], float] = random.uniform,
+        rate_limit_retries: int = 2,
+        rate_limit_backoff_seconds: float = 30,
     ) -> None:
+        if rate_limit_retries < 0:
+            raise ValueError("Bilibili rate-limit retries must not be negative")
+        if rate_limit_backoff_seconds < 0:
+            raise ValueError("Bilibili rate-limit backoff must not be negative")
         self.browser_profile = Path(browser_profile)
         self.browser_name = browser_name
         self.logger = logger or YtDlpLogSink()
+        self._sleep = sleep
+        self._jitter = jitter
+        self.rate_limit_retries = rate_limit_retries
+        self.rate_limit_backoff_seconds = rate_limit_backoff_seconds
+        self._instance: YoutubeDL | None = None
+        self._lock = Lock()
 
     @property
     def base_options(self) -> dict[str, Any]:
@@ -106,12 +124,61 @@ class YtDlpBridge:
             "skip_download": True,
             "listsubtitles": True,
             "cachedir": False,
+            "sleep_interval_requests": 1.0,
+            "retries": 2,
+            "extractor_retries": 2,
         }
 
     def extract(self, url: str, *, flat: bool = False) -> dict[str, Any]:
-        options = {**self.base_options, "extract_flat": flat}
-        with YoutubeDL(options) as downloader:
-            result = downloader.extract_info(url, download=False)
+        with self._lock:
+            downloader = self._downloader()
+            downloader.params.update(
+                {
+                    **self.base_options,
+                    "extract_flat": flat,
+                    "skip_download": True,
+                    "listsubtitles": True,
+                }
+            )
+            for attempt in range(self.rate_limit_retries + 1):
+                try:
+                    result = downloader.extract_info(url, download=False)
+                    break
+                except DownloadError as error:
+                    cause = error.exc_info[1] if error.exc_info else None
+                    structurally_unavailable = (
+                        isinstance(cause, KeyError)
+                        and bool(cause.args)
+                        and cause.args[0] in {"aid", "bvid"}
+                    )
+                    if bool(getattr(cause, "expected", False)) or structurally_unavailable:
+                        raise AdapterError(
+                            AdapterErrorCode.MEDIA_UNAVAILABLE,
+                            "Bilibili source item is unavailable",
+                            retryable=False,
+                        ) from error
+                    cause_text = str(cause).lower()
+                    rate_limited = any(
+                        marker in cause_text
+                        for marker in ("412", "429", "too many requests", "rate limit")
+                    )
+                    if rate_limited and attempt < self.rate_limit_retries:
+                        base = self.rate_limit_backoff_seconds * (2**attempt)
+                        self._sleep(base + self._jitter(0, max(1.0, base * 0.25)))
+                        continue
+                    raise AdapterError(
+                        (
+                            AdapterErrorCode.RATE_LIMITED
+                            if rate_limited
+                            else AdapterErrorCode.MEDIA_UNAVAILABLE
+                        ),
+                        (
+                            "Bilibili extraction is rate limited"
+                            if rate_limited
+                            else "Bilibili extraction failed"
+                        ),
+                        retryable=True,
+                    ) from error
         if not isinstance(result, dict):
             raise AdapterError(
                 AdapterErrorCode.LAYOUT_CHANGED,
@@ -123,15 +190,19 @@ class YtDlpBridge:
     def download(self, url: str, output_dir: Path) -> tuple[Path, ...]:
         output_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
         before = {path.resolve() for path in output_dir.rglob("*") if path.is_file()}
-        options = {
-            **self.base_options,
-            "skip_download": False,
-            "listsubtitles": False,
-            "paths": {"home": str(output_dir)},
-            "outtmpl": {"default": "%(id).80B.%(ext)s"},
-            "restrictfilenames": True,
-        }
-        with YoutubeDL(options) as downloader:
+        with self._lock:
+            downloader = self._downloader()
+            downloader.params.update(
+                {
+                    **self.base_options,
+                    "extract_flat": False,
+                    "skip_download": False,
+                    "listsubtitles": False,
+                    "paths": {"home": str(output_dir)},
+                    "outtmpl": {"default": "%(id).80B.%(ext)s"},
+                    "restrictfilenames": True,
+                }
+            )
             downloader.extract_info(url, download=True)
         downloaded = tuple(
             sorted(
@@ -141,6 +212,11 @@ class YtDlpBridge:
             )
         )
         return downloaded
+
+    def _downloader(self) -> YoutubeDL:
+        if self._instance is None:
+            self._instance = YoutubeDL({**self.base_options, "extract_flat": False})
+        return self._instance
 
 
 class BilibiliPageDiscovery:
@@ -152,6 +228,7 @@ class BilibiliPageDiscovery:
 
     async def check_session(self) -> SessionStatus:
         try:
+            await self.client.navigate("https://www.bilibili.com/")
             result = await self.client.fetch_json(
                 "https://api.bilibili.com/x/web-interface/nav"
             )
@@ -340,7 +417,33 @@ class BilibiliAdapter(BaseAdapter):
     async def fetch_item(self, reference: FavoriteRef) -> NormalizedItem:
         if reference.platform != self.platform:
             raise ValueError("Bilibili adapter received a cross-platform reference")
-        info = await asyncio.to_thread(self.bridge.extract, reference.source_url, flat=False)
+        try:
+            info = await asyncio.to_thread(self.bridge.extract, reference.source_url, flat=False)
+        except AdapterError as error:
+            if error.code != AdapterErrorCode.MEDIA_UNAVAILABLE or error.retryable:
+                raise
+            return NormalizedItem(
+                canonical_id=reference.canonical_id,
+                platform=self.platform,
+                content_type=ContentType.VIDEO,
+                source_url=reference.source_url,
+                title="Unavailable Bilibili item",
+                author="Unknown author",
+                first_seen_at=self.now(),
+                last_seen_at=self.now(),
+                source_availability=SourceAvailability.UNAVAILABLE,
+                source_revision=reference.source_revision,
+                metadata_fingerprint=reference.metadata_fingerprint
+                or _fingerprint({"id": reference.platform_item_id, "availability": "unavailable"}),
+                platform_metadata={
+                    "parts": [],
+                    "subtitle_available": False,
+                    "requires_local_asr": False,
+                    "extractor": "yt-dlp:BiliBili",
+                    "availability_probe": "expected_extractor_error",
+                },
+                adapter_version=ADAPTER_VERSION,
+            )
         raw_parts = info.get("entries") if isinstance(info.get("entries"), list) else []
         parts: list[dict[str, object]] = []
         subtitles: list[TextSegment] = []

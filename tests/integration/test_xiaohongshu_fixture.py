@@ -94,7 +94,7 @@ def _adapter(tmp_path: Path | None = None) -> XiaohongshuAdapter:
     )
 
 
-def test_ordered_gallery_prefers_default_url_and_records_only_real_downgrade(
+def test_ordered_gallery_prefers_default_url_and_records_page_renditions(
     tmp_path: Path,
 ) -> None:
     adapter = _adapter(tmp_path)
@@ -102,9 +102,12 @@ def test_ordered_gallery_prefers_default_url_and_records_only_real_downgrade(
 
     assert [asset.ordinal for asset in item.assets] == [0, 1]
     assert item.assets[0].source_url == "https://example.invalid/original-1.png"
-    assert item.assets[0].quality == "original"
+    assert item.assets[0].quality == "page-default"
     assert item.assets[1].quality == "fallback"
-    assert item.platform_metadata["image_quality_downgrades"] == [item.assets[1].asset_id]
+    assert item.platform_metadata["image_quality_downgrades"] == [
+        item.assets[0].asset_id,
+        item.assets[1].asset_id,
+    ]
     assert [block.kind for block in item.content_blocks] == [
         ContentBlockKind.TEXT,
         ContentBlockKind.ASSET,

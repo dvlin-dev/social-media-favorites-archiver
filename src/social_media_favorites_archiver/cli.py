@@ -161,23 +161,32 @@ async def open_adapters(
         cdp_url=settings.browser_cdp_url,
         profile_path=settings.browser_profile_path,
     )
-    page = await session.connect()
-    client = PageContextClient(page)
+    hosts = {
+        Platform.BILIBILI: "www.bilibili.com",
+        Platform.XIAOHONGSHU: "www.xiaohongshu.com",
+        Platform.DOUYIN: "www.douyin.com",
+    }
+    clients = {
+        platform: PageContextClient(
+            await session.connect(preferred_host=hosts[platform])
+        )
+        for platform in platforms
+    }
     store = _asset_store(settings)
     adapters: dict[Platform, BaseAdapter] = {}
     if Platform.BILIBILI in platforms:
         adapters[Platform.BILIBILI] = BilibiliAdapter(
             bridge=YtDlpBridge(browser_profile=settings.browser_profile_path),
-            discovery=BilibiliPageDiscovery(client),
+            discovery=BilibiliPageDiscovery(clients[Platform.BILIBILI]),
         )
     if Platform.XIAOHONGSHU in platforms:
         adapters[Platform.XIAOHONGSHU] = XiaohongshuAdapter(
-            bridge=XiaohongshuBrowserBridge(client),
+            bridge=XiaohongshuBrowserBridge(clients[Platform.XIAOHONGSHU]),
             asset_store=store,
         )
     if Platform.DOUYIN in platforms:
         adapters[Platform.DOUYIN] = DouyinAdapter(
-            bridge=DouyinBrowserBridge(client),
+            bridge=DouyinBrowserBridge(clients[Platform.DOUYIN]),
             asset_store=store,
         )
     try:
