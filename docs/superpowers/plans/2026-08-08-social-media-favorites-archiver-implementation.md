@@ -37,7 +37,7 @@ Update the `Status` cell as work progresses. Exactly one task may be `in_progres
 | 2 | Configuration and doctor command | completed |
 | 3 | Domain model and SQLite schema | completed |
 | 4 | Durable queue, leases, and state machine | completed |
-| 5 | Markdown renderer, note protection, and indexes | pending |
+| 5 | Markdown renderer, note protection, and indexes | completed |
 | 6 | Asset safety, redaction, and cleanup barrier | pending |
 | 7 | Browser session and adapter contract | pending |
 | 8 | Bilibili adapter | pending |
@@ -216,17 +216,17 @@ social-media-favorites-archiver/
 - Create: `tests/unit/test_markdown.py`
 - Create: `tests/integration/test_note_resync.py`
 
-- [ ] Write golden tests for the metadata skeleton and completed note, including stable `smfa_id`, platform ID, source URL, author, collections, favorite state, processing status, dates, ordered images, inline per-image OCR, transcript segments, and provenance.
-- [ ] Define generated-region markers and write failing tests proving user text outside the generated region survives resync.
-- [ ] Locate existing notes by scanning/indexing frontmatter `smfa_id`, not only by remembered path, so user moves and renames do not create duplicates.
-- [ ] If markers are missing or malformed, create a conflict diagnostic and preserve the file unchanged; never append a second generated block.
-- [ ] Merge frontmatter while preserving user-defined fields and user-added tags; own only documented `smfa_*` and generated fields.
-- [ ] Write Markdown atomically through a temporary file plus `fsync`/rename where supported.
-- [ ] Generate deterministic author, collection, tag, and topic/MOC index notes using Obsidian links without requiring Obsidian-specific storage.
-- [ ] Generate timestamp deep links only where the source platform has a verified stable time parameter; for Bilibili use the verified source form and otherwise show plain timestamps.
-- [ ] Run golden, move/rename, marker-corruption, and frontmatter-merge tests.
-- [ ] Commit with `feat: render protected Markdown notes and indexes`.
-- [ ] Update the tracker and report results before continuing to Task 6.
+- [x] Write golden tests for the metadata skeleton and completed note, including stable `smfa_id`, platform ID, source URL, author, collections, favorite state, processing status, dates, ordered images, inline per-image OCR, transcript segments, and provenance.
+- [x] Define generated-region markers and write failing tests proving user text outside the generated region survives resync.
+- [x] Locate existing notes by scanning/indexing frontmatter `smfa_id`, not only by remembered path, so user moves and renames do not create duplicates.
+- [x] If markers are missing or malformed, create a conflict diagnostic and preserve the file unchanged; never append a second generated block.
+- [x] Merge frontmatter while preserving user-defined fields and user-added tags; own only documented `smfa_*` and generated fields.
+- [x] Write Markdown atomically through a temporary file plus `fsync`/rename where supported.
+- [x] Generate deterministic author, collection, tag, and topic/MOC index notes using Obsidian links without requiring Obsidian-specific storage.
+- [x] Generate timestamp deep links only where the source platform has a verified stable time parameter; for Bilibili use the verified source form and otherwise show plain timestamps.
+- [x] Run golden, move/rename, marker-corruption, and frontmatter-merge tests.
+- [x] Commit with `feat: render protected Markdown notes and indexes`.
+- [x] Update the tracker and report results before continuing to Task 6.
 
 ## Task 6: Asset safety, redaction, and cleanup barrier
 
