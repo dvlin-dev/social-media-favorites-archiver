@@ -35,7 +35,7 @@ Update the `Status` cell as work progresses. Exactly one task may be `in_progres
 | 0 | Preflight and execution baseline | completed |
 | 1 | Python project scaffold and CI | completed |
 | 2 | Configuration and doctor command | completed |
-| 3 | Domain model and SQLite schema | pending |
+| 3 | Domain model and SQLite schema | completed |
 | 4 | Durable queue, leases, and state machine | pending |
 | 5 | Markdown renderer, note protection, and indexes | pending |
 | 6 | Asset safety, redaction, and cleanup barrier | pending |
@@ -177,16 +177,16 @@ social-media-favorites-archiver/
 - Create: `tests/unit/test_models.py`
 - Create: `tests/integration/test_database.py`
 
-- [ ] Write failing tests for canonical platform IDs, collections, normalized items, ordered assets, text segments, extraction records, and per-collection membership state.
-- [ ] Define Pydantic models that preserve source timestamps, author, original URL, ordered content blocks, media type, content availability, and adapter provenance without leaking raw private responses into Markdown.
-- [ ] Write failing migration tests for a fresh DB, repeat migration, WAL mode, foreign keys, and upgrade from the immediately previous schema version.
-- [ ] Implement a standard-library `sqlite3` repository and numbered transactional migrations for: `items`, `collections`, `item_collections`, `assets`, `jobs`, `runs`, `extractions`, `enrichments`, and `schema_migrations`.
-- [ ] Store `source_revision`/lightweight metadata fingerprint separately from downloaded asset SHA-256. Never use a post-transcription content hash to decide whether media needs downloading.
-- [ ] Represent removal on `item_collections`; derive item-level removal only when no active membership remains.
-- [ ] Add unique constraints that enforce canonical identity and idempotent jobs without preventing one item from belonging to multiple collections.
-- [ ] Run focused tests, then the full test suite, lint, and types.
-- [ ] Commit with `feat: add normalized models and SQLite state`.
-- [ ] Update the tracker and report results before continuing to Task 4.
+- [x] Write failing tests for canonical platform IDs, collections, normalized items, ordered assets, text segments, extraction records, and per-collection membership state.
+- [x] Define Pydantic models that preserve source timestamps, author, original URL, ordered content blocks, media type, content availability, and adapter provenance without leaking raw private responses into Markdown.
+- [x] Write failing migration tests for a fresh DB, repeat migration, WAL mode, foreign keys, and upgrade from the immediately previous schema version.
+- [x] Implement a standard-library `sqlite3` repository and numbered transactional migrations for: `items`, `collections`, `item_collections`, `assets`, `jobs`, `runs`, `extractions`, `enrichments`, and `schema_migrations`.
+- [x] Store `source_revision`/lightweight metadata fingerprint separately from downloaded asset SHA-256. Never use a post-transcription content hash to decide whether media needs downloading.
+- [x] Represent removal on `item_collections`; derive item-level removal only when no active membership remains.
+- [x] Add unique constraints that enforce canonical identity and idempotent jobs without preventing one item from belonging to multiple collections.
+- [x] Run focused tests, then the full test suite, lint, and types.
+- [x] Commit with `feat: add normalized models and SQLite state`.
+- [x] Update the tracker and report results before continuing to Task 4.
 
 ## Task 4: Durable queue, leases, and state machine
 

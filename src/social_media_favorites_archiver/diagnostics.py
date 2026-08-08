@@ -21,6 +21,7 @@ from social_media_favorites_archiver.config import (
     OCRBackend,
     select_asr_backend,
 )
+from social_media_favorites_archiver.storage.migrations import CURRENT_SCHEMA_VERSION
 
 DiagnosticStatus = Literal["pass", "warning", "fail"]
 
@@ -120,10 +121,22 @@ def _check_database_schema(settings: AppSettings) -> DiagnosticCheck:
             summary="state database exists but has no recognized schema yet",
         )
     version = 0 if row is None or row[0] is None else int(row[0])
+    if version > CURRENT_SCHEMA_VERSION:
+        return DiagnosticCheck(
+            code="database_schema",
+            status="fail",
+            summary="state database requires a newer application",
+        )
+    if version < CURRENT_SCHEMA_VERSION:
+        return DiagnosticCheck(
+            code="database_schema",
+            status="warning",
+            summary="state database has pending local migrations",
+        )
     return DiagnosticCheck(
         code="database_schema",
-        status="pass" if version == 0 else "warning",
-        summary="schema is compatible" if version == 0 else "schema requires a newer application",
+        status="pass",
+        summary="schema is compatible",
     )
 
 
@@ -224,4 +237,3 @@ def run_doctor(
     elif any(check.status == "warning" for check in checks):
         status = "warning"
     return DoctorReport(status=status, checks=checks, enrichment_presence=presence)
-

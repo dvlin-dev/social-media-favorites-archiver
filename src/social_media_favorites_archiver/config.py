@@ -14,13 +14,7 @@ import yaml
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-
-class Platform(StrEnum):
-    """Supported collection platforms."""
-
-    BILIBILI = "bilibili"
-    XIAOHONGSHU = "xiaohongshu"
-    DOUYIN = "douyin"
+from social_media_favorites_archiver.models import Platform
 
 
 class ASRBackend(StrEnum):
@@ -188,4 +182,3 @@ def select_asr_backend(
         if backend in choices:
             return backend
     return ASRBackend.UNAVAILABLE
-

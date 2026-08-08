@@ -6,6 +6,7 @@ from typer.testing import CliRunner
 from social_media_favorites_archiver.cli import app
 from social_media_favorites_archiver.config import AppSettings
 from social_media_favorites_archiver.diagnostics import run_doctor
+from social_media_favorites_archiver.storage.database import Database
 
 runner = CliRunner()
 
@@ -56,6 +57,16 @@ def test_doctor_covers_required_local_checks(tmp_path: Path) -> None:
         "disk_quota",
         "enrichment",
     }
+
+
+def test_doctor_accepts_current_database_schema(tmp_path: Path) -> None:
+    settings = _settings(tmp_path)
+    Database(settings.state_db_path).migrate()
+
+    report = run_doctor(settings, environ={})
+
+    schema_check = next(check for check in report.checks if check.code == "database_schema")
+    assert schema_check.status == "pass"
 
 
 def test_doctor_json_terminal_output_never_echoes_secrets(
