@@ -32,7 +32,7 @@ Update the `Status` cell as work progresses. Exactly one task may be `in_progres
 
 | Task | Deliverable | Status |
 |---:|---|---|
-| 0 | Preflight and execution baseline | pending |
+| 0 | Preflight and execution baseline | completed |
 | 1 | Python project scaffold and CI | pending |
 | 2 | Configuration and doctor command | pending |
 | 3 | Domain model and SQLite schema | pending |
@@ -114,14 +114,14 @@ social-media-favorites-archiver/
 - Inspect: `docs/superpowers/specs/2026-08-08-social-media-favorites-archiver-design.md`
 - Create: `docs/verification/preflight.md`
 
-- [ ] Read `AGENTS.md`, the complete detailed design, and this complete plan before changing source code.
-- [ ] Run `git status --short`, `git log -5 --oneline`, and `git remote -v`; record only non-sensitive repository facts in `docs/verification/preflight.md`.
-- [ ] Run `python3 --version`, `uv --version`, `ffmpeg -version`, `node --version`, `npx --version`, `yt-dlp --version`, and `uname -m`; record availability and versions, not full host diagnostics.
-- [ ] Check only presence booleans for `OPENAI_API_KEY`, `OPENAI_BASE_URL`, and `OPENAI_MODEL`. Never echo values. Record `present` or `absent` and note that enrichment remains optional.
-- [ ] Estimate free disk space and record a conservative default cache quota; do not scan unrelated user directories.
-- [ ] Verify that the GitHub remote belongs to the intended repository and that the current branch can be pushed without overwriting unrelated work.
-- [ ] Commit with `docs: record implementation preflight`.
-- [ ] Update the task tracker and report evidence, commit hash, and Task 1 as the next task.
+- [x] Read `AGENTS.md`, the complete detailed design, and this complete plan before changing source code.
+- [x] Run `git status --short`, `git log -5 --oneline`, and `git remote -v`; record only non-sensitive repository facts in `docs/verification/preflight.md`.
+- [x] Run `python3 --version`, `uv --version`, `ffmpeg -version`, `node --version`, `npx --version`, `yt-dlp --version`, and `uname -m`; record availability and versions, not full host diagnostics.
+- [x] Check only presence booleans for `OPENAI_API_KEY`, `OPENAI_BASE_URL`, and `OPENAI_MODEL`. Never echo values. Record `present` or `absent` and note that enrichment remains optional.
+- [x] Estimate free disk space and record a conservative default cache quota; do not scan unrelated user directories.
+- [x] Verify that the GitHub remote belongs to the intended repository and that the current branch can be pushed without overwriting unrelated work.
+- [x] Commit with `docs: record implementation preflight`.
+- [x] Update the task tracker and report evidence, commit hash, and Task 1 as the next task.
 
 ## Task 1: Python project scaffold and CI
 
