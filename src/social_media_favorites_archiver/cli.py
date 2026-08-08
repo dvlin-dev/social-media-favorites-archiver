@@ -1,8 +1,14 @@
 """Command-line interface for Social Media Favorites Archiver."""
 
-from typing import NoReturn
+import json
+from pathlib import Path
+from typing import Annotated, NoReturn
 
 import typer
+from pydantic import ValidationError
+
+from social_media_favorites_archiver.config import load_settings
+from social_media_favorites_archiver.diagnostics import run_doctor
 
 app = typer.Typer(
     help="Archive your own social-media favorites into local Markdown.",
@@ -16,9 +22,35 @@ def _not_implemented(command: str) -> NoReturn:
 
 
 @app.command()
-def doctor() -> None:
+def doctor(
+    json_output: Annotated[
+        bool,
+        typer.Option("--json", help="Emit a structured redacted report."),
+    ] = False,
+    config: Annotated[
+        Path | None,
+        typer.Option("--config", help="Read settings from this YAML file."),
+    ] = None,
+) -> None:
     """Check local prerequisites without exposing secrets."""
-    _not_implemented("doctor")
+    try:
+        settings = load_settings(config)
+    except (OSError, ValueError, ValidationError):
+        typer.echo("Configuration is invalid or unreadable; no values were displayed.", err=True)
+        raise typer.Exit(code=2) from None
+
+    report = run_doctor(settings)
+    if json_output:
+        typer.echo(json.dumps(report.model_dump(mode="json"), indent=2, sort_keys=True))
+    else:
+        typer.echo(f"doctor: {report.status}")
+        for check in report.checks:
+            typer.echo(f"[{check.status}] {check.code}: {check.summary}")
+        typer.echo("Optional enrichment variables (presence only):")
+        for name, present in report.enrichment_presence.items():
+            typer.echo(f"  {name}: {'present' if present else 'absent'}")
+    if report.status == "fail":
+        raise typer.Exit(code=1)
 
 
 @app.command()
@@ -53,4 +85,3 @@ def cleanup() -> None:
 
 if __name__ == "__main__":
     app()
-

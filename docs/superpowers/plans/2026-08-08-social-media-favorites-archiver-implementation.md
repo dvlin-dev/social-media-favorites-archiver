@@ -34,7 +34,7 @@ Update the `Status` cell as work progresses. Exactly one task may be `in_progres
 |---:|---|---|
 | 0 | Preflight and execution baseline | completed |
 | 1 | Python project scaffold and CI | completed |
-| 2 | Configuration and doctor command | pending |
+| 2 | Configuration and doctor command | completed |
 | 3 | Domain model and SQLite schema | pending |
 | 4 | Durable queue, leases, and state machine | pending |
 | 5 | Markdown renderer, note protection, and indexes | pending |
@@ -157,15 +157,15 @@ social-media-favorites-archiver/
 - Create: `tests/unit/test_diagnostics.py`
 - Create: `skill/social-media-favorites-archiver/references/configuration.md`
 
-- [ ] Write failing tests for config precedence (`CLI > environment > config file > defaults`), path expansion, cache quota validation, model-backend selection, and safe missing optional LLM settings.
-- [ ] Define typed settings for vault, state DB, cache, browser CDP/profile, enabled platforms, concurrency, retries, early-stop threshold, cleanup policy, ASR/OCR backends, terminology dictionary, and optional enrichment.
-- [ ] Use project-prefixed environment variables for application settings while reading the existing `OPENAI_API_KEY`, `OPENAI_BASE_URL`, and `OPENAI_MODEL` only in the enrichment provider.
-- [ ] Write failing doctor tests that assert secret values are never present in terminal output or structured diagnostics.
-- [ ] Implement `smfa doctor [--json]` checks for Python, FFmpeg, browser/CDP readiness, yt-dlp, writable configured directories, DB schema compatibility, selected ASR/OCR backends, disk quota, and optional enrichment presence booleans.
-- [ ] Document a safe sample config and environment-variable reference without real tokens, cookies, or private paths.
-- [ ] Run `uv run pytest tests/unit/test_config.py tests/unit/test_diagnostics.py -q` plus lint and types.
-- [ ] Commit with `feat: add typed configuration and safe diagnostics`.
-- [ ] Update the tracker and report results before continuing to Task 3.
+- [x] Write failing tests for config precedence (`CLI > environment > config file > defaults`), path expansion, cache quota validation, model-backend selection, and safe missing optional LLM settings.
+- [x] Define typed settings for vault, state DB, cache, browser CDP/profile, enabled platforms, concurrency, retries, early-stop threshold, cleanup policy, ASR/OCR backends, terminology dictionary, and optional enrichment.
+- [x] Use project-prefixed environment variables for application settings while reading the existing `OPENAI_API_KEY`, `OPENAI_BASE_URL`, and `OPENAI_MODEL` only in the enrichment provider.
+- [x] Write failing doctor tests that assert secret values are never present in terminal output or structured diagnostics.
+- [x] Implement `smfa doctor [--json]` checks for Python, FFmpeg, browser/CDP readiness, yt-dlp, writable configured directories, DB schema compatibility, selected ASR/OCR backends, disk quota, and optional enrichment presence booleans.
+- [x] Document a safe sample config and environment-variable reference without real tokens, cookies, or private paths.
+- [x] Run `uv run pytest tests/unit/test_config.py tests/unit/test_diagnostics.py -q` plus lint and types.
+- [x] Commit with `feat: add typed configuration and safe diagnostics`.
+- [x] Update the tracker and report results before continuing to Task 3.
 
 ## Task 3: Domain model and SQLite schema
 
