@@ -56,7 +56,7 @@ Update the `Status` cell as work progresses. Exactly one task may be `in_progres
 | 21 | Skills.sh installation and discovery | completed |
 | 22 | ClawHub publication and verification | completed |
 | 23 | Clean-room post-publication verification | completed |
-| 24 | Final audit and handoff | in_progress |
+| 24 | Final audit and handoff | completed |
 
 ### Release gates
 
@@ -516,7 +516,7 @@ The user explicitly narrowed live heavy processing on 2026-08-09 to one represen
 - [x] Scan the repository, logs, report, and Git diff for private content and secrets before committing the sanitized evidence report.
 - [x] Fix every discovered product bug with a failing regression test before updating the corresponding matrix row to pass.
 - [x] Confirm the scoped G3–G6 evidence and commit with `test: validate three-platform live workflows`.
-- [ ] Update the tracker and report results before continuing to Task 19.
+- [x] Update the tracker and report results before continuing to Task 19.
 
 ## Task 19: Skill packaging and trigger evaluations
 
@@ -661,14 +661,14 @@ The first executable `1.0.3` CI run exposed missing FFmpeg provisioning, a force
 - Modify: `docs/verification/2026-08-08-release.md`
 - Modify if necessary: `README.md`
 
-- [ ] Confirm every checkbox in Tasks 0–23 is completed and evidenced. No required three-platform/type row may be silently waived; a user-accepted limitation must remain visibly documented and cannot be relabeled as a pass.
-- [ ] Confirm Tasks 0–23 are `completed` and all release gates G1–G8 have evidence.
-- [ ] Run final `git status --short`, full tests, lint, types, package build/install smoke test, fixture privacy scan, and Skill bundle validation.
-- [ ] Confirm the worktree is clean, all intended commits/tags are pushed, and no live artifacts or secrets exist in Git history introduced by this work.
-- [ ] Verify the README links the detailed design, this implementation plan, GitHub release, Skills.sh listing, and ClawHub listing.
-- [ ] Prepare the final conversation report containing: shipped features, representative live matrix result, test totals, version/tag, GitHub release URL, Skills.sh URL, ClawHub URL/reference, known limitations, and safe first command for the user.
-- [ ] Check this task's completed boxes, set Task 24 to `completed`, commit with `docs: complete implementation plan`, push, and confirm `git status --short` is empty; then send the prepared final report.
-- [ ] Do not call the project complete until the final report and all public install paths have been verified.
+- [x] Confirm every checkbox in Tasks 0–23 is completed and evidenced. No required three-platform/type row may be silently waived; a user-accepted limitation must remain visibly documented and cannot be relabeled as a pass.
+- [x] Confirm Tasks 0–23 are `completed` and all release gates G1–G8 have evidence.
+- [x] Run final `git status --short`, full tests, lint, types, package build/install smoke test, fixture privacy scan, and Skill bundle validation.
+- [x] Confirm the worktree is clean, all intended commits/tags are pushed, and no live artifacts or secrets exist in Git history introduced by this work.
+- [x] Verify the README links the detailed design, this implementation plan, GitHub release, Skills.sh listing, and ClawHub listing.
+- [x] Prepare the final conversation report containing: shipped features, representative live matrix result, test totals, version/tag, GitHub release URL, Skills.sh URL, ClawHub URL/reference, known limitations, and safe first command for the user.
+- [x] Check this task's completed boxes, set Task 24 to `completed`, commit with `docs: complete implementation plan`, push, and confirm `git status --short` is empty; then send the prepared final report.
+- [x] Do not call the project complete until the final report and all public install paths have been verified.
 
 ## Completion definition
 

@@ -183,4 +183,10 @@ uv run mypy src
 uv run python scripts/check_dependency_licenses.py
 ```
 
+## Public distribution
+
+- [GitHub release v1.0.4](https://github.com/dvlin-dev/social-media-favorites-archiver/releases/tag/v1.0.4)
+- [Skills.sh listing](https://skills.sh/dvlin-dev/social-media-favorites-archiver/social-media-favorites-archiver)
+- [ClawHub listing](https://clawhub.ai/dvlin-dev/skills/social-media-favorites-archiver) (`@dvlin-dev/social-media-favorites-archiver`)
+
 The [detailed design](docs/superpowers/specs/2026-08-08-social-media-favorites-archiver-design.md), [implementation plan](docs/superpowers/plans/2026-08-08-social-media-favorites-archiver-implementation.md), and [release evidence](docs/verification/2026-08-08-release.md) describe the architecture, execution gates, and sanitized verification record.
