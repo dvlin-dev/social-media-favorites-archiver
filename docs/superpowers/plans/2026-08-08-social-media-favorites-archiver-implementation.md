@@ -54,8 +54,8 @@ Update the `Status` cell as work progresses. Exactly one task may be `in_progres
 | 19 | Skill packaging and trigger evaluations | completed |
 | 20 | User documentation and GitHub 1.0 release | completed |
 | 21 | Skills.sh installation and discovery | completed |
-| 22 | ClawHub publication and verification | in_progress |
-| 23 | Clean-room post-publication verification | pending |
+| 22 | ClawHub publication and verification | completed |
+| 23 | Clean-room post-publication verification | in_progress |
 | 24 | Final audit and handoff | pending |
 
 ### Release gates
@@ -594,10 +594,10 @@ Current official model: Skills.sh discovers skills hosted in GitHub repositories
 
 Before publication, recheck the current official [ClawHub guide](https://docs.openclaw.ai/clawhub), [Skill format](https://docs.openclaw.ai/clawhub/skill-format), [creating Skills guide](https://docs.openclaw.ai/tools/creating-skills), and [OpenClaw Skills guide](https://docs.openclaw.ai/tools/skills). If current official syntax differs from this plan, update the plan with the evidence before executing the changed command.
 
-- [ ] Before publishing, tell the user that ClawHub publishes Skill bundles under MIT-0 while the application repository remains MIT. The user already requested publication, so continue unless they object or the platform requests new legal/account authorization.
-- [ ] Install or update the official CLI (`npm i -g clawhub`), run `clawhub login` if needed, and verify the active account with `clawhub whoami`. Pause only for user-owned browser/account confirmation.
-- [ ] Validate the nested folder, parent/name match, one-line description under 160 characters, MIT-0 bundle license, optional environment metadata, references, ignore rules, and size under 50 MB.
-- [ ] Publish from the nested folder with:
+- [x] Before publishing, tell the user that ClawHub publishes Skill bundles under MIT-0 while the application repository remains MIT. The user already requested publication, so continue unless they object or the platform requests new legal/account authorization.
+- [x] Install or update the official CLI (`npm i -g clawhub`), run `clawhub login` if needed, and verify the active account with `clawhub whoami`. Pause only for user-owned browser/account confirmation.
+- [x] Validate the nested folder, parent/name match, one-line description under 160 characters, MIT-0 bundle license, optional environment metadata, references, ignore rules, and size under 50 MB.
+- [x] Publish from the nested folder with:
 
   ```bash
   clawhub skill publish skill/social-media-favorites-archiver \
@@ -608,12 +608,12 @@ Before publication, recheck the current official [ClawHub guide](https://docs.op
     --tags latest
   ```
 
-- [ ] Capture the exact qualified reference and public URL returned by ClawHub; do not assume the ClawHub owner handle matches the GitHub handle.
-- [ ] Wait for the ClawHub security scan. If it is held or fails, inspect the report, fix the bundle/security issue, increment the version when required, republish, and do not mark this task complete until it passes.
-- [ ] Verify with `openclaw skills search "social media favorites archiver"`, `openclaw skills install <qualified-ref>`, `openclaw skills verify <qualified-ref>`, and `openclaw skills verify <qualified-ref> --card` using the exact published reference.
-- [ ] Record account handle, qualified reference, version, scan status, URL, and sanitized verification results in the release report.
-- [ ] Commit with `docs: record ClawHub publication` and push.
-- [ ] Update the tracker and report results before continuing to Task 23.
+- [x] Capture the exact qualified reference and public URL returned by ClawHub; do not assume the ClawHub owner handle matches the GitHub handle.
+- [x] Wait for the ClawHub security scan. If it is held or fails, inspect the report, fix the bundle/security issue, increment the version when required, republish, and do not mark this task complete until it passes.
+- [x] Verify with `openclaw skills search "social media favorites archiver"`, `openclaw skills install <qualified-ref>`, `openclaw skills verify <qualified-ref>`, and `openclaw skills verify <qualified-ref> --card` using the exact published reference.
+- [x] Record account handle, qualified reference, version, scan status, URL, and sanitized verification results in the release report.
+- [x] Commit with `docs: record ClawHub publication` and push.
+- [x] Update the tracker and report results before continuing to Task 23.
 
 ## Task 23: Clean-room post-publication verification
 
