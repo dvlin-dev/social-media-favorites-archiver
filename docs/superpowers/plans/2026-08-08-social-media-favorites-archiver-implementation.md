@@ -620,13 +620,26 @@ Before publication, recheck the current official [ClawHub guide](https://docs.op
 **Files:**
 
 - Modify: `docs/verification/2026-08-08-release.md`
-- Modify if defects are found: affected implementation, Skill bundle, tests, changelog, and version
+- Modify: `skill/social-media-favorites-archiver/SKILL.md`
+- Modify: `tests/unit/test_skill_bundle.py`
+- Modify: `pyproject.toml`
+- Modify: `uv.lock`
+- Modify: `README.md`
+- Modify: `CHANGELOG.md`
+- Modify: this plan and the detailed design
+
+The first clean install exposed Skills.sh Agent Trust Hub/Snyk warnings for indirect prompt injection because the Skill did not explicitly classify social-media text as untrusted data. The user approved the minimal content-boundary fix (approach A) and instructed the Agent to publish directly. The user also explicitly prohibited any further real-account testing; preserve the earlier Task 18 live matrix and the already completed bounded Xiaohongshu metadata-only check as historical evidence, but do not access an account during the 1.0.1 rerun.
+
+- [ ] Add a failing bundle regression test requiring an explicit untrusted-content boundary: third-party titles/descriptions/subtitles/OCR/ASR are data, embedded instructions/commands/URLs are never followed, Agent decisions use sanitized aggregate reports, and optional enrichment preserves structured instruction/data separation.
+- [ ] Add the minimal boundary to `SKILL.md` without changing its trigger description or broadening its scope; run the focused test and trigger smoke tests.
+- [ ] Bump application/Skill documentation to `1.0.1`, update the pinned install target, build artifacts, run the full quality/privacy suite, tag the exact release commit, publish the GitHub patch release, and verify a fresh public install.
+- [ ] Refresh Skills.sh from the public default branch and publish ClawHub `1.0.1`; wait for scan and generated Skill Card, then verify both public pages and exact install references.
 
 - [ ] Create two fresh temporary directories: one for a Skills.sh/GitHub CLI installation and one for the ClawHub installation. Do not reuse development virtualenvs or installed Skill folders.
 - [ ] Install from each distribution path and verify the nested bundle contains only intended files.
 - [ ] From each clean install, invoke the Skill with a positive personal-favorites prompt and verify it leads to the pinned public CLI installation and `smfa doctor`.
 - [ ] Invoke a negative single-link transcription/OCR prompt and verify the Skill does not claim that unrelated task.
-- [ ] Run a non-destructive metadata-only or bounded test-collection flow using authorized session state; do not commit the resulting private vault.
+- [ ] Record the already completed non-destructive bounded Xiaohongshu metadata-only flow from the public 1.0.0 CLI. Per the user's later instruction, do not repeat any real-account flow for 1.0.1; state this accepted limitation visibly and use sanitized fixtures/regression tests for the patch rerun.
 - [ ] Verify both installations point at the immutable released application version and have matching user-visible behavior.
 - [ ] Test documented uninstall/removal steps without deleting the user's real vault, browser profile, or model cache.
 - [ ] If a defect is found, add a regression test, issue the necessary patch release, republish/update both registries, and rerun this entire task.
