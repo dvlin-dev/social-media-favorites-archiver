@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file. Release tags are immutable.
 
+## [1.0.1] - 2026-08-09
+
+### Security
+
+- Explicitly classify platform titles, descriptions, subtitles, OCR/ASR transcripts, author fields, and URLs as untrusted data rather than Agent instructions.
+- Forbid following embedded prompts, commands, and links; Agent decisions use only fixed Skill commands and sanitized aggregate reports.
+- Keep optional enrichment instructions separate from allowlisted structured text and require schema-validated output.
+
 ## [1.0.0] - 2026-08-09
 
 ### Added
@@ -27,4 +35,5 @@ All notable changes to this project are documented in this file. Release tags ar
 - Cleanup requires cache containment, database ownership, hash verification, a complete derivative barrier, and final-note verification.
 - Captchas, device checks, access controls, rate limits, signatures, and anti-bot systems are never bypassed.
 
+[1.0.1]: https://github.com/dvlin-dev/social-media-favorites-archiver/releases/tag/v1.0.1
 [1.0.0]: https://github.com/dvlin-dev/social-media-favorites-archiver/releases/tag/v1.0.0

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "social-media-favorites-archiver"
-version = "1.0.0"
+version = "1.0.1"
 description = "Archive personal social-media favorites into a local Markdown knowledge base."
 readme = "README.md"
 requires-python = ">=3.11"

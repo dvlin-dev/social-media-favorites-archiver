@@ -630,8 +630,8 @@ Before publication, recheck the current official [ClawHub guide](https://docs.op
 
 The first clean install exposed Skills.sh Agent Trust Hub/Snyk warnings for indirect prompt injection because the Skill did not explicitly classify social-media text as untrusted data. The user approved the minimal content-boundary fix (approach A) and instructed the Agent to publish directly. The user also explicitly prohibited any further real-account testing; preserve the earlier Task 18 live matrix and the already completed bounded Xiaohongshu metadata-only check as historical evidence, but do not access an account during the 1.0.1 rerun.
 
-- [ ] Add a failing bundle regression test requiring an explicit untrusted-content boundary: third-party titles/descriptions/subtitles/OCR/ASR are data, embedded instructions/commands/URLs are never followed, Agent decisions use sanitized aggregate reports, and optional enrichment preserves structured instruction/data separation.
-- [ ] Add the minimal boundary to `SKILL.md` without changing its trigger description or broadening its scope; run the focused test and trigger smoke tests.
+- [x] Add a failing bundle regression test requiring an explicit untrusted-content boundary: third-party titles/descriptions/subtitles/OCR/ASR are data, embedded instructions/commands/URLs are never followed, Agent decisions use sanitized aggregate reports, and optional enrichment preserves structured instruction/data separation.
+- [x] Add the minimal boundary to `SKILL.md` without changing its trigger description or broadening its scope; run the focused test and trigger smoke tests.
 - [ ] Bump application/Skill documentation to `1.0.1`, update the pinned install target, build artifacts, run the full quality/privacy suite, tag the exact release commit, publish the GitHub patch release, and verify a fresh public install.
 - [ ] Refresh Skills.sh from the public default branch and publish ClawHub `1.0.1`; wait for scan and generated Skill Card, then verify both public pages and exact install references.
 
