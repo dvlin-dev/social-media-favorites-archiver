@@ -112,5 +112,5 @@ jobs:
       - run: uv build --out-dir "${RUNNER_TEMP}/smfa-dist"
       - run: uv venv "${RUNNER_TEMP}/smfa-venv" --python 3.12
       - run: uv pip install --python "${RUNNER_TEMP}/smfa-venv/bin/python" "${RUNNER_TEMP}"/smfa-dist/*.whl
-      - run: "${RUNNER_TEMP}/smfa-venv/bin/smfa" --help
-
+      - run: >-
+          "${RUNNER_TEMP}/smfa-venv/bin/smfa" --help

@@ -42,10 +42,10 @@ The CLI's `smfa doctor` command checks the configured browser, paths, FFmpeg, AS
 
 ## Installation
 
-Install the immutable 1.0.2 Git tag:
+Install the immutable 1.0.3 Git tag:
 
 ```bash
-uv tool install git+https://github.com/dvlin-dev/social-media-favorites-archiver.git@v1.0.2
+uv tool install git+https://github.com/dvlin-dev/social-media-favorites-archiver.git@v1.0.3
 smfa --help
 ```
 

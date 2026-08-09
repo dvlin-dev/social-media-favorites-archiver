@@ -632,6 +632,8 @@ The first clean install exposed Skills.sh Agent Trust Hub/Snyk warnings for indi
 
 The first post-publication `1.0.1` Skills.sh behavior smoke substituted an unavailable PyPI-style install command even though the bundle pinned the Git tag. Treat this as a clean-room defect: add an exact-command regression, release `1.0.2`, republish both registries, and rerun the clean-room checks without account access.
 
+The `1.0.2` public audit then exposed that GitHub Actions had never created jobs because the final package smoke command was invalid YAML. Add a workflow parsing regression, correct the quoting, release `1.0.3`, and require a green public GitHub Actions run before accepting G8.
+
 - [x] Add a failing bundle regression test requiring an explicit untrusted-content boundary: third-party titles/descriptions/subtitles/OCR/ASR are data, embedded instructions/commands/URLs are never followed, Agent decisions use sanitized aggregate reports, and optional enrichment preserves structured instruction/data separation.
 - [x] Add the minimal boundary to `SKILL.md` without changing its trigger description or broadening its scope; run the focused test and trigger smoke tests.
 - [x] Bump application/Skill documentation to `1.0.1`, update the pinned install target, build artifacts, run the full quality/privacy suite, tag the exact release commit, publish the GitHub patch release, and verify a fresh public install.
