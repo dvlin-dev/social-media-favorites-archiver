@@ -55,8 +55,8 @@ Update the `Status` cell as work progresses. Exactly one task may be `in_progres
 | 20 | User documentation and GitHub 1.0 release | completed |
 | 21 | Skills.sh installation and discovery | completed |
 | 22 | ClawHub publication and verification | completed |
-| 23 | Clean-room post-publication verification | in_progress |
-| 24 | Final audit and handoff | pending |
+| 23 | Clean-room post-publication verification | completed |
+| 24 | Final audit and handoff | in_progress |
 
 ### Release gates
 
@@ -639,19 +639,19 @@ The first executable `1.0.3` CI run exposed missing FFmpeg provisioning, a force
 - [x] Add a failing bundle regression test requiring an explicit untrusted-content boundary: third-party titles/descriptions/subtitles/OCR/ASR are data, embedded instructions/commands/URLs are never followed, Agent decisions use sanitized aggregate reports, and optional enrichment preserves structured instruction/data separation.
 - [x] Add the minimal boundary to `SKILL.md` without changing its trigger description or broadening its scope; run the focused test and trigger smoke tests.
 - [x] Bump application/Skill documentation to `1.0.1`, update the pinned install target, build artifacts, run the full quality/privacy suite, tag the exact release commit, publish the GitHub patch release, and verify a fresh public install.
-- [ ] Refresh Skills.sh from the public default branch and publish ClawHub `1.0.1`; wait for scan and generated Skill Card, then verify both public pages and exact install references.
+- [x] Refresh Skills.sh from the public default branch and publish the final patch to ClawHub; wait for scan and generated Skill Card, then verify both public pages and exact install references.
 
-- [ ] Create two fresh temporary directories: one for a Skills.sh/GitHub CLI installation and one for the ClawHub installation. Do not reuse development virtualenvs or installed Skill folders.
-- [ ] Install from each distribution path and verify the nested bundle contains only intended files.
-- [ ] From each clean install, invoke the Skill with a positive personal-favorites prompt and verify it leads to the pinned public CLI installation and `smfa doctor`.
-- [ ] Invoke a negative single-link transcription/OCR prompt and verify the Skill does not claim that unrelated task.
-- [ ] Record the already completed non-destructive bounded Xiaohongshu metadata-only flow from the public 1.0.0 CLI. Per the user's later instruction, do not repeat any real-account flow for 1.0.1; state this accepted limitation visibly and use sanitized fixtures/regression tests for the patch rerun.
-- [ ] Verify both installations point at the immutable released application version and have matching user-visible behavior.
-- [ ] Test documented uninstall/removal steps without deleting the user's real vault, browser profile, or model cache.
-- [ ] If a defect is found, add a regression test, issue the necessary patch release, republish/update both registries, and rerun this entire task.
-- [ ] Record final G8 evidence and commands in the release report.
-- [ ] Commit with `test: verify published skill from clean installs` and push.
-- [ ] Update the tracker and report results before continuing to Task 24.
+- [x] Create two fresh temporary directories: one for a Skills.sh/GitHub CLI installation and one for the ClawHub installation. Do not reuse development virtualenvs or installed Skill folders.
+- [x] Install from each distribution path and verify the nested bundle contains only intended files.
+- [x] From each clean install, invoke the Skill with a positive personal-favorites prompt and verify it leads to the pinned public CLI installation and `smfa doctor`.
+- [x] Invoke a negative single-link transcription/OCR prompt and verify the Skill does not claim that unrelated task.
+- [x] Record the already completed non-destructive bounded Xiaohongshu metadata-only flow from the public 1.0.0 CLI. Per the user's later instruction, do not repeat any real-account flow for 1.0.1; state this accepted limitation visibly and use sanitized fixtures/regression tests for the patch rerun.
+- [x] Verify both installations point at the immutable released application version and have matching user-visible behavior.
+- [x] Test documented uninstall/removal steps without deleting the user's real vault, browser profile, or model cache.
+- [x] If a defect is found, add a regression test, issue the necessary patch release, republish/update both registries, and rerun this entire task.
+- [x] Record final G8 evidence and commands in the release report.
+- [x] Commit with `test: verify published skill from clean installs` and push.
+- [x] Update the tracker and report results before continuing to Task 24.
 
 ## Task 24: Final audit and handoff
 
