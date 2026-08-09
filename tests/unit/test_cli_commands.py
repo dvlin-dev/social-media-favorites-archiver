@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import json
+import re
 from datetime import UTC, datetime
 from pathlib import Path
 
-from click.utils import strip_ansi
 from typer.testing import CliRunner
 
 from social_media_favorites_archiver.cli import app
@@ -14,6 +14,7 @@ from social_media_favorites_archiver.storage.database import Database
 
 runner = CliRunner()
 NOW = datetime(2026, 8, 8, 12, 0, tzinfo=UTC)
+ANSI_ESCAPE = re.compile(r"\x1b(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
 
 
 def _config(tmp_path: Path) -> Path:
@@ -35,8 +36,8 @@ def _config(tmp_path: Path) -> Path:
 def test_help_exposes_complete_command_surface_and_sync_modes() -> None:
     result = runner.invoke(app, ["--help"], color=False)
     sync_help = runner.invoke(app, ["sync", "--help"], color=False)
-    root_output = strip_ansi(result.output)
-    sync_output = strip_ansi(sync_help.output)
+    root_output = ANSI_ESCAPE.sub("", result.output)
+    sync_output = ANSI_ESCAPE.sub("", sync_help.output)
 
     assert result.exit_code == 0, result.output
     for command in (
