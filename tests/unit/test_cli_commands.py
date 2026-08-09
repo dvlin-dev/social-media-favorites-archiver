@@ -32,8 +32,8 @@ def _config(tmp_path: Path) -> Path:
 
 
 def test_help_exposes_complete_command_surface_and_sync_modes() -> None:
-    result = runner.invoke(app, ["--help"])
-    sync_help = runner.invoke(app, ["sync", "--help"])
+    result = runner.invoke(app, ["--help"], color=False)
+    sync_help = runner.invoke(app, ["sync", "--help"], color=False)
 
     assert result.exit_code == 0, result.output
     for command in (

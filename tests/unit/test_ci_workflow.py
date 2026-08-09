@@ -23,3 +23,7 @@ def test_ci_workflow_is_valid_yaml_with_expected_jobs() -> None:
         "coverage",
         "package-and-licenses",
     }.issubset(jobs)
+    unit_steps = jobs["unit-tests"]["steps"]
+    coverage_steps = jobs["coverage"]["steps"]
+    assert sum("ffmpeg" in str(step.get("run", "")).lower() for step in unit_steps) == 2
+    assert any("ffmpeg" in str(step.get("run", "")).lower() for step in coverage_steps)

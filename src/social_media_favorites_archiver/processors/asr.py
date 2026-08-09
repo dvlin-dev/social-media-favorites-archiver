@@ -336,7 +336,7 @@ class MlxWhisperBackend:
         duration = audio_duration(audio_path)
         if is_silent_wav(audio_path):
             return _no_speech(self.name, self.model, request.language, duration)
-        import mlx_whisper  # type: ignore[import-untyped]
+        import mlx_whisper
 
         result = mlx_whisper.transcribe(
             str(audio_path),

@@ -2824,7 +2824,7 @@ wheels = [
 
 [[package]]
 name = "social-media-favorites-archiver"
-version = "1.0.3"
+version = "1.0.4"
 source = { editable = "." }
 dependencies = [
     { name = "filelock" },

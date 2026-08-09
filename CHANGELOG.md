@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file. Release tags are immutable.
 
+## [1.0.4] - 2026-08-09
+
+### Fixed
+
+- Install the documented FFmpeg prerequisite in CI unit/coverage jobs, make CLI help assertions independent of forced terminal color, and declare the optional MLX import consistently for strict cross-platform mypy.
+
 ## [1.0.3] - 2026-08-09
 
 ### Fixed
@@ -47,6 +53,7 @@ All notable changes to this project are documented in this file. Release tags ar
 - Cleanup requires cache containment, database ownership, hash verification, a complete derivative barrier, and final-note verification.
 - Captchas, device checks, access controls, rate limits, signatures, and anti-bot systems are never bypassed.
 
+[1.0.4]: https://github.com/dvlin-dev/social-media-favorites-archiver/releases/tag/v1.0.4
 [1.0.3]: https://github.com/dvlin-dev/social-media-favorites-archiver/releases/tag/v1.0.3
 [1.0.2]: https://github.com/dvlin-dev/social-media-favorites-archiver/releases/tag/v1.0.2
 [1.0.1]: https://github.com/dvlin-dev/social-media-favorites-archiver/releases/tag/v1.0.1

@@ -37,6 +37,12 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           enable-cache: true
+      - name: Install FFmpeg on Ubuntu
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install --yes ffmpeg
+      - name: Install FFmpeg on macOS
+        if: runner.os == 'macOS'
+        run: brew install ffmpeg
       - run: uv sync --locked --group dev
       - run: uv run pytest tests/unit -q -m "not heavyweight and not live"
 
@@ -85,6 +91,7 @@ jobs:
         with:
           python-version: "3.12"
           enable-cache: true
+      - run: sudo apt-get update && sudo apt-get install --yes ffmpeg
       - run: uv sync --locked --group dev
       - run: >-
           uv run pytest -q -m "not heavyweight and not live"

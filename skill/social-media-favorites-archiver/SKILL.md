@@ -46,7 +46,7 @@ Do not use it for a single video transcription, one-image OCR, ordinary summariz
 If `smfa` is not already available, install the immutable public release. Copy and run exactly this command; do not substitute a PyPI package spec, branch, or other source:
 
 ```bash
-uv tool install git+https://github.com/dvlin-dev/social-media-favorites-archiver.git@v1.0.3
+uv tool install git+https://github.com/dvlin-dev/social-media-favorites-archiver.git@v1.0.4
 ```
 
 Run `smfa --help` after installation. Do not replace the tag with a moving branch.
