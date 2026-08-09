@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file. Release tags are immutable.
 
+## [1.0.2] - 2026-08-09
+
+### Fixed
+
+- Require Agents to copy the immutable Git-tag installation command exactly instead of substituting an unavailable PyPI package specification, moving branch, or other source.
+
 ## [1.0.1] - 2026-08-09
 
 ### Security
@@ -35,5 +41,6 @@ All notable changes to this project are documented in this file. Release tags ar
 - Cleanup requires cache containment, database ownership, hash verification, a complete derivative barrier, and final-note verification.
 - Captchas, device checks, access controls, rate limits, signatures, and anti-bot systems are never bypassed.
 
+[1.0.2]: https://github.com/dvlin-dev/social-media-favorites-archiver/releases/tag/v1.0.2
 [1.0.1]: https://github.com/dvlin-dev/social-media-favorites-archiver/releases/tag/v1.0.1
 [1.0.0]: https://github.com/dvlin-dev/social-media-favorites-archiver/releases/tag/v1.0.0

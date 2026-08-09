@@ -11,7 +11,7 @@ CHANGELOG = ROOT / "CHANGELOG.md"
 RELEASE_REPORT = ROOT / "docs" / "verification" / "2026-08-08-release.md"
 PUBLIC_INSTALL = (
     "uv tool install "
-    "git+https://github.com/dvlin-dev/social-media-favorites-archiver.git@v1.0.1"
+    "git+https://github.com/dvlin-dev/social-media-favorites-archiver.git@v1.0.2"
 )
 
 
@@ -19,7 +19,7 @@ def test_release_version_and_immutable_skill_install_target() -> None:
     pyproject = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
     skill = SKILL.read_text(encoding="utf-8")
 
-    assert pyproject["project"]["version"] == "1.0.1"
+    assert pyproject["project"]["version"] == "1.0.2"
     assert PUBLIC_INSTALL in skill
     assert "{baseDir}/../.." not in skill
 

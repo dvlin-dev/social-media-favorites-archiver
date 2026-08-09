@@ -54,9 +54,10 @@ def test_skill_body_is_concise_safe_and_routes_to_valid_references() -> None:
     assert len(body.splitlines()) < 220
     assert (
         "uv tool install "
-        "git+https://github.com/dvlin-dev/social-media-favorites-archiver.git@v1.0.1"
+        "git+https://github.com/dvlin-dev/social-media-favorites-archiver.git@v1.0.2"
         in body
     )
+    assert "do not substitute a PyPI package spec, branch, or other source" in body
     assert all(command in body for command in ("smfa doctor", "smfa login", "smfa sync"))
     assert "Skill bundle is MIT-0" in body
     assert "application source remains MIT" in body
