@@ -4,6 +4,7 @@ import json
 from datetime import UTC, datetime
 from pathlib import Path
 
+from click.utils import strip_ansi
 from typer.testing import CliRunner
 
 from social_media_favorites_archiver.cli import app
@@ -34,6 +35,8 @@ def _config(tmp_path: Path) -> Path:
 def test_help_exposes_complete_command_surface_and_sync_modes() -> None:
     result = runner.invoke(app, ["--help"], color=False)
     sync_help = runner.invoke(app, ["sync", "--help"], color=False)
+    root_output = strip_ansi(result.output)
+    sync_output = strip_ansi(sync_help.output)
 
     assert result.exit_code == 0, result.output
     for command in (
@@ -46,7 +49,7 @@ def test_help_exposes_complete_command_surface_and_sync_modes() -> None:
         "cleanup",
         "report",
     ):
-        assert command in result.output
+        assert command in root_output
     for option in (
         "--collection",
         "--metadata-only",
@@ -56,7 +59,7 @@ def test_help_exposes_complete_command_surface_and_sync_modes() -> None:
         "--dry-run",
         "--json",
     ):
-        assert option in sync_help.output
+        assert option in sync_output
 
 
 def test_invalid_configuration_uses_stable_usage_exit_code(tmp_path: Path) -> None:
